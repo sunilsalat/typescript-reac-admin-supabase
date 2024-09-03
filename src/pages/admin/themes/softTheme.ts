@@ -22,7 +22,7 @@ export const softDarkTheme = {
   components: {
     ...defaultTheme.components,
     RaMenuItemLink: {
-      styleOverrides: {
+      styleoverrides: {
         root: {
           borderLeft: "3px solid #000",
           "&.RaMenuItemLink-active": {
@@ -32,10 +32,10 @@ export const softDarkTheme = {
       },
     },
     MuiFilledInput: {
-      styleOverrides: undefined,
+      styleoverrides: undefined,
     },
     MuiAppBar: {
-      styleOverrides: {
+      styleoverrides: {
         colorSecondary: {
           color: "#ffffffb3",
           backgroundColor: "#616161",
@@ -73,7 +73,7 @@ export const softLightTheme = {
   components: {
     ...defaultTheme.components,
     RaMenuItemLink: {
-      styleOverrides: {
+      styleoverrides: {
         root: {
           borderLeft: "3px solid #fff",
           "&.RaMenuItemLink-active": {
@@ -83,7 +83,7 @@ export const softLightTheme = {
       },
     },
     MuiPaper: {
-      styleOverrides: {
+      styleoverrides: {
         elevation1: {
           boxShadow: "none",
         },
@@ -94,7 +94,7 @@ export const softLightTheme = {
       },
     },
     MuiAppBar: {
-      styleOverrides: {
+      styleoverrides: {
         colorSecondary: {
           color: "#808080",
           backgroundColor: "#fff",
@@ -105,7 +105,7 @@ export const softLightTheme = {
       },
     },
     MuiLinearProgress: {
-      styleOverrides: {
+      styleoverrides: {
         colorPrimary: {
           backgroundColor: "#f5f5f5",
         },
@@ -115,7 +115,7 @@ export const softLightTheme = {
       },
     },
     MuiTableRow: {
-      styleOverrides: {
+      styleoverrides: {
         root: {
           "&:last-child td": { border: 0 },
         },

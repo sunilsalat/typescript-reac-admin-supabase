@@ -30,7 +30,7 @@ function MyAdmin() {
 
   return (
     <Admin
-      // basename="/admin"
+      basename="/admin"
       dataProvider={dataProvider}
       authProvider={authProvider}
       requireAuth

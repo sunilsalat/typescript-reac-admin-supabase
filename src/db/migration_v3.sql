@@ -221,10 +221,8 @@ CREATE TABLE order_invoices (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (profile_id) REFERENCES profile(user_id)
+    FOREIGN KEY (order_id) REFERENCES orders(id)
 );
-
 
 CREATE TABLE IF NOT EXISTS media (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -346,8 +344,7 @@ CREATE TABLE IF NOT EXISTS properties (
   deleted_at TIMESTAMP,
   FOREIGN KEY (orgnization_id) REFERENCES organizations(id)
 );
-
-CREATE TABLE IF NOT EXISTS property_winners (
+CREATE TABLE IF NOT EXISTS properties_winners (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
   country_id UUID NOT NULL,
@@ -355,13 +352,13 @@ CREATE TABLE IF NOT EXISTS property_winners (
   continent_id UUID NOT NULL,
   winner_category VARCHAR NOT NULL,
   division_type VARCHAR NOT NULL,
-  "year" NOT NULL
+  year INTEGER CHECK (year BETWEEN 1900 AND 2099),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP
 )
 
-CREATE TABLE IF NOT EXISTS property_voting_years (
+CREATE TABLE IF NOT EXISTS properties_voting_years (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
   "voting_year" VARCHAR NOT NULL,
@@ -378,17 +375,17 @@ CREATE TABLE IF NOT EXISTS featured_properties (
   deleted_at TIMESTAMP
 )
 
-CREATE TABLE IF NOT EXISTS property_nomination_categories (
+CREATE TABLE IF NOT EXISTS properties_nomination_categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
   nomination_category_id UUID NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (nomination_category_id) REFERENCES(nomination_categories)
+  FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id)
 ) 
 
-CREATE TABLE IF NOT EXISTS property_social_links (
+CREATE TABLE IF NOT EXISTS properties_social_links (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
   name VARCHAR(255) NOT NULL,
@@ -410,7 +407,7 @@ CREATE TABLE IF NOT EXISTS properties_settings (
   deleted_at TIMESTAMP
 )
 
-CREATE TABLE IF NOT EXISTS property_booking_links (
+CREATE TABLE IF NOT EXISTS properties_booking_links (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
   phone_number VARCHAR(255),
@@ -427,14 +424,13 @@ CREATE TABLE IF NOT EXISTS spa (
 
 CREATE TABLE IF NOT EXISTS restaurant (
   cuisines TEXT[],
-  maximum_attendee_capacity INT,
+  maximum_attendee_capacity INT
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS hotel (
   checkin_time VARCHAR(255),
   checkout_time VARCHAR(255),
-  number_of_rooms INTEGER,
-  hotel_type TEXT DEFAULT 'HOTEL', -- not sure
+  number_of_rooms INTEGER
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS category_aggregated_ratings (
@@ -460,11 +456,8 @@ CREATE TABLE IF NOT EXISTS aggregated_ratings (
   deleted_at TIMESTAMP
 );
 
-
-
-
-
-CREATE TABLE IF NOT EXISTS review_categories (
+-- review start
+CREATE TABLE IF NOT EXISTS products_review_categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   entity_type TEXT, 
   entity_id VARCHAR(255) DEFAULT '',
@@ -496,7 +489,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   UNIQUE (profile_id,entity_id)
 );
 
-CREATE TABLE IF NOT EXISTS category_reviews (
+CREATE TABLE IF NOT EXISTS sub_reviews (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   review_id UUID NOT NULL,
   category_name VARCHAR(255) NOT NULL, 
@@ -506,7 +499,7 @@ CREATE TABLE IF NOT EXISTS category_reviews (
   deleted_at TIMESTAMP,
   FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
 );
--- property end
+-- review end
 
 CREATE TABLE IF NOT EXISTS votes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -578,11 +571,14 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
     deleted_at TIMESTAMP
 );
 
--- create invoice_settings_logs to capture invoice_settings history
--- NEXT DISCUSSION
--- property, vote, email_fingerprint >table
+-- TODO
 -- create separate payment table
--- implement inheritence in porperty table
+-- create invoice_settings_logs to capture invoice_settings history
 
--- todo
--- join table for properties_nominationcategories
+
+-- NEXT DISCUSSION
+-- vote, email_fingerprint >table
+-- policies discussion
+
+-- QUESTIONS
+-- do we need agency table ?

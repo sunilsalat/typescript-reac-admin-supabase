@@ -1,10 +1,17 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MyAdmin from "./pages/admin/admin";
 
 function App() {
   return (
-    <>
-      <MyAdmin />
-    </>
+    <RouterProvider
+      router={createBrowserRouter([
+        {
+          path: "/admin/*",
+          element: <MyAdmin />,
+          children: [],
+        },
+      ])}
+    ></RouterProvider>
   );
 }
 
