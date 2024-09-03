@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS resources_media (
   entity_id UUID NOT NULL,
   media_id UUID NOT NULL,
   "position" INT DEFAULT 0,
+  media_type TEXT DEFAULT 'GALLERY' -- FEATURED/GALLERY/LOGO/TAGLINE
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -334,6 +335,11 @@ CREATE TABLE IF NOT EXISTS properties (
   amenity_feature_description TEXT DEFAULT '',
   "description" TEXT DEFAULT '',
   email VARCHAR(255) NOT NULL,
+  --
+  start_rating INTEGER,
+  accepted_payment_method text[],
+  currencies_accepted UUID[],
+  --
   visibility VARCHAR(50) DEFAULT 'PUBLIC',
   global_location_number VARCHAR(255) DEFAULT '',
   voting_division_id UUID REFERENCES nations(id),
@@ -344,6 +350,7 @@ CREATE TABLE IF NOT EXISTS properties (
   deleted_at TIMESTAMP,
   FOREIGN KEY (orgnization_id) REFERENCES organizations(id)
 );
+
 CREATE TABLE IF NOT EXISTS properties_winners (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,

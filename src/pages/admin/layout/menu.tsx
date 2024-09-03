@@ -15,6 +15,7 @@ import Reviews from "../reviews";
 import Books from "../books";
 import Nations from "../settings/nations";
 import SubMenu from "./subMenu";
+import Hotel from "../property/hotel";
 
 // Define the shape of the state used in the menu
 interface MenuState {
@@ -22,6 +23,7 @@ interface MenuState {
   products: boolean;
   pressReleases: boolean;
   nations: boolean;
+  properties: boolean;
   settings?: boolean; // Optional property
 }
 
@@ -36,6 +38,7 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
     products: true,
     pressReleases: true,
     nations: true,
+    properties: true,
   });
 
   const translate = useTranslate();
@@ -59,7 +62,7 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
       }}
     >
       <DashboardMenuItem />
-      <SubMenu
+      {/* <SubMenu
         handleToggle={() => handleToggle("items")}
         isOpen={state.items}
         name="Items"
@@ -82,6 +85,23 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
             smart_count: 2,
           })}
           leftIcon={<Books.icon />}
+          dense={dense}
+        />
+      </SubMenu>  */}
+      <SubMenu
+        handleToggle={() => handleToggle("properties")}
+        isOpen={state.properties}
+        name="Properties"
+        icon={<Hotel.icon />}
+        dense={dense}
+      >
+        <MenuItemLink
+          to="/admin/hotel"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`Hotels`, {
+            smart_count: 2,
+          })}
+          leftIcon={<Hotel.icon />}
           dense={dense}
         />
       </SubMenu>

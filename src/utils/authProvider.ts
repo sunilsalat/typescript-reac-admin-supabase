@@ -6,8 +6,8 @@ const authProviderOptions: SupabaseAuthProviderOptions = {
   getIdentity: async (user: User): Promise<any> => {
     const { data, error } = await supabase
       .from("profile")
-      .select("id, first_name, last_name")
-      .match({ email: user.email })
+      .select("name, email")
+      .eq("email", user.email)
       .single();
 
     if (!data || error) {
@@ -15,8 +15,8 @@ const authProviderOptions: SupabaseAuthProviderOptions = {
     }
 
     return {
-      id: data.id,
-      fullName: `${data.first_name} ${data.last_name}`,
+      fullName: `${data.name}`,
+      email: `${data.email}`,
     };
   },
 };

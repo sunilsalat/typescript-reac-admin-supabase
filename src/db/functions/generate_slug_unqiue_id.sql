@@ -65,6 +65,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 call create_trigger_for_table('press_releases', 'title', 10, 'both');
+call create_trigger_for_table('organizations', 'name', 10, 'unique_id');
 
 
 

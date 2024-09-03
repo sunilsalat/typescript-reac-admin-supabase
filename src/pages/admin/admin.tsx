@@ -18,6 +18,7 @@ import Reviews from "./reviews";
 import Nations from "./settings/nations";
 import Books from "./books";
 import Laptops from "./laptops";
+import Hotel from "./property/hotel";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -56,6 +57,7 @@ function MyAdmin() {
       <Resource name="books" {...Books} />
       <Resource name="laptops" {...Laptops} />
       <Resource name="nations" {...Nations} />
+      <Resource name="hotel" {...Hotel} />
       <Resource name="currencies" />
     </Admin>
   );

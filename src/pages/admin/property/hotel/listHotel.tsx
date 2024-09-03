@@ -1,0 +1,43 @@
+import {
+  CreateButton,
+  DatagridConfigurable,
+  DateField,
+  EmailField,
+  ExportButton,
+  List,
+  NumberField,
+  ReferenceField,
+  SearchInput,
+  SelectColumnsButton,
+  TextField,
+  TopToolbar,
+} from "react-admin";
+
+export const listHotel = () => (
+  <List
+    filters={[<SearchInput source="name" alwaysOn />]}
+    actions={
+      <TopToolbar>
+        <SelectColumnsButton />
+        <CreateButton />
+        <ExportButton />
+      </TopToolbar>
+    }
+  >
+    <DatagridConfigurable>
+      <ReferenceField source="orgnization_id" reference="orgnizations" />
+      <TextField source="name" />
+      <TextField source="legal_name" />
+      <TextField source="tagline" />
+      <TextField source="price_range" />
+      <TextField source="description" />
+      <EmailField source="email" />
+      <TextField source="visibility" />
+      <TextField source="slug" />
+      <TextField source="checkin_time" />
+      <TextField source="checkout_time" />
+      <NumberField source="number_of_rooms" />
+      <DateField source="created_at" />
+    </DatagridConfigurable>
+  </List>
+);

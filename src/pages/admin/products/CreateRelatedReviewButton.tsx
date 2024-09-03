@@ -1,15 +1,23 @@
-import * as React from 'react';
-import { CreateButton, useRecordContext } from 'react-admin';
+import { CreateButton, useRecordContext } from "react-admin";
 
 const CreateRelatedReviewButton = () => {
-    const record = useRecordContext();
+  const record = useRecordContext();
 
-    return (
-        <CreateButton
-            resource="reviews"
-            state={record ? { record: { entity_id: record.id } } : undefined}
-        />
-    );
+  return (
+    <CreateButton
+      resource="reviews"
+      state={
+        record
+          ? {
+              record: {
+                entity_id: record.id,
+                entity_type: "1", // products
+              },
+            }
+          : undefined
+      }
+    />
+  );
 };
 
 export default CreateRelatedReviewButton;

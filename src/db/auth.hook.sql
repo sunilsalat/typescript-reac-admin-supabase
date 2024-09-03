@@ -41,7 +41,7 @@ to supabase_auth_admin;
 
 revoke all
   on table public.profile
-  from authenticated, anon, public;
+  from  anon, public;
 
 create policy "Allow auth admin to read profiles" ON public.profile
 as permissive for select

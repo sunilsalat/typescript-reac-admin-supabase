@@ -14,6 +14,7 @@ import {
 import { ProductEditDetails } from "./productEditDetail";
 import React from "react";
 import StarRatingField from "../reviews/StarRatingField";
+import CreateRelatedReviewButton from "./CreateRelatedReviewButton";
 
 const RichTextInput = React.lazy(() =>
   import("ra-input-rich-text").then((module) => ({
@@ -27,26 +28,19 @@ const ProductTitle = () => {
 };
 
 export const productEdit = () => (
-  <Edit title={<ProductTitle />} mutationMode="pessimistic">
+  <Edit title={<ProductTitle />}>
     <TabbedForm>
-      {/* <TabbedForm.Tab
-        label="resources.products.tabs.image"
-        sx={{ maxWidth: "40em" }}
-      >
-        <Poster />
-        <TextInput source="image" validate={req} />
-        <TextInput source="thumbnail" validate={req} />
-      </TabbedForm.Tab> */}
-      <TabbedForm.Tab label="details" path="details" sx={{ maxWidth: "40em" }}>
+      {/* details */}
+      <TabbedForm.Tab label="details" sx={{ maxWidth: "40em" }}>
         <ProductEditDetails />
       </TabbedForm.Tab>
-      <TabbedForm.Tab
-        label="description"
-        path="description"
-        sx={{ maxWidth: "40em" }}
-      >
+
+      {/* description */}
+      <TabbedForm.Tab label="description" sx={{ maxWidth: "40em" }}>
         <RichTextInput source="description" label="" validate={req} />
       </TabbedForm.Tab>
+
+      {/* reviews */}
       <TabbedForm.Tab
         label="reviews"
         count={
@@ -56,7 +50,6 @@ export const productEdit = () => (
             sx={{ lineHeight: "inherit" }}
           />
         }
-        path="reviews"
       >
         <ReferenceManyField
           reference="reviews"
@@ -82,6 +75,7 @@ export const productEdit = () => (
             <TextField source="status" />
             <EditButton />
           </Datagrid>
+          <CreateRelatedReviewButton />
         </ReferenceManyField>
       </TabbedForm.Tab>
     </TabbedForm>
