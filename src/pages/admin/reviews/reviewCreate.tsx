@@ -4,15 +4,19 @@ import {
   CreateProps,
   DateInput,
   FormDataConsumer,
+  getRecordFromLocation,
   NumberInput,
   ReferenceInput,
   required,
   SelectInput,
   SimpleForm,
   TextInput,
+  useNotify,
+  useRedirect,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
 import CustomerReferenceField from "../users/customerReferenceField";
+import { useLocation } from "react-router-dom";
 
 const ets: { id: string; name: string }[] = [
   { id: "1", name: "products" },
@@ -29,8 +33,21 @@ const findItem = (id: string): string => {
 export const reviewCreate = (
   props: JSX.IntrinsicAttributes & CreateProps<any, Error, any>
 ) => {
+  const notify = useNotify();
+  const redirect = useRedirect();
+  const location = useLocation();
+
+  const onSuccess = (_: any) => {
+    const record = getRecordFromLocation(location);
+    notify("Review added.");
+    if (record && record.entity_id) {
+      redirect(`/admin/products/${record.entity_id}/3`);
+    } else {
+      redirect(`/reviews`);
+    }
+  };
   return (
-    <Create {...props}>
+    <Create {...props} mutationOptions={{ onSuccess }}>
       <SimpleForm>
         <SelectInput source="entity_type" choices={ets} validate={required()} />
         <FormDataConsumer<{ entity_type: string }>>

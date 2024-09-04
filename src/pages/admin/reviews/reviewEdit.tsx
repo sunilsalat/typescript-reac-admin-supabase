@@ -17,17 +17,17 @@ export const reviewEdit = () => {
   return (
     <Edit>
       <SimpleForm>
-        {/* <TextInput source="entity_type" />
-        <ReferenceInput source="entity_id" reference="products" disabled /> */}
-        <CustomerReferenceField source="profile_id" />
-        {/* <TextInput source="reviewer_name" />
+        <TextInput source="entity_type" />
+        <ReferenceInput source="entity_id" reference="products" disabled />
+        {/* <CustomerReferenceField source="profile_id" /> */}
+        <TextInput source="reviewer_name" />
         <TextInput source="reviewer_email" />
         <TextInput source="reviewer_note" />
         <NumberInput source="overall_rating" />
         <BooleanInput source="verified" />
         <TextInput source="verification_code" />
         <TextInput source="unique_id" />
-        <DateInput source="created_at" /> */}
+        <DateInput source="created_at" />
       </SimpleForm>
     </Edit>
   );

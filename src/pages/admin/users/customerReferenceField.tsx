@@ -13,17 +13,16 @@ const CustomerReferenceField = (
 ) => {
   const record = useRecordContext();
 
-  //   return record ? (
-  //     <ReferenceField source="profile_id" reference="profile" {...props}>
-  //       <FullNameField source="email" />
-  //     </ReferenceField>
-  //   ) : null;
-
-  return (
-    <ReferenceField source="user_id" reference="profile" {...props}>
+  return record ? (
+    <ReferenceField
+      label="profile_ref"
+      source="profile_id"
+      reference="profile"
+      {...props}
+    >
       <FullNameField source="email" />
     </ReferenceField>
-  );
+  ) : null;
 };
 
 export default CustomerReferenceField;

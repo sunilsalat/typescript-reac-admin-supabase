@@ -19,6 +19,7 @@ import Nations from "./settings/nations";
 import Books from "./books";
 import Laptops from "./laptops";
 import Hotel from "./property/hotel";
+import GroupedProducts from "./groupedProducts";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -59,6 +60,7 @@ function MyAdmin() {
       <Resource name="nations" {...Nations} />
       <Resource name="hotel" {...Hotel} />
       <Resource name="currencies" />
+      <Resource name="grouped_products" {...GroupedProducts} />
     </Admin>
   );
 }

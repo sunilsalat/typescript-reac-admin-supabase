@@ -19,7 +19,7 @@ const FullNameField = (props: Props) => {
       component="div"
       sx={props.sx}
     >
-      {record.first_name} {record.last_name}
+      {record.name} - {record.email}
     </Typography>
   ) : null;
 };
