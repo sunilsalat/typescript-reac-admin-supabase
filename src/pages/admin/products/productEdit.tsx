@@ -8,27 +8,27 @@ import {
   ImageField,
   ImageInput,
   Pagination,
+  ReferenceArrayField,
   ReferenceField,
   ReferenceManyCount,
   ReferenceManyField,
   required,
+  SimpleList,
   TabbedForm,
   TextField,
-  useDataProvider,
-  useFormGroupContext,
-  useGetOne,
-  useGetRecordId,
-  useNotify,
+  TextInput,
   useRecordContext,
-  useRedirect,
-  useUpdate,
+  WithRecord,
 } from "react-admin";
 import { ProductEditDetails } from "./productEditDetail";
 import StarRatingField from "../reviews/StarRatingField";
 import CreateRelatedReviewButton from "./CreateRelatedReviewButton";
 import CreateGroupedProductButton from "./createGroupedProductButton";
 import { JSX } from "react/jsx-runtime";
-import { uploadImagesToSupabase } from "../../../db/queries/uploadImages";
+import CreateRelatedMediaButton from "./createRelatedImageButton";
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import ImageCard from "./imageCard";
+import GridList from "./gridList";
 
 const RichTextInput = React.lazy(() =>
   import("ra-input-rich-text").then((module) => ({
@@ -41,52 +41,58 @@ const ProductTitle = () => {
   return record ? <span>Product "{record.name}"</span> : null;
 };
 
+const Aside = () => (
+  <div style={{ width: 200, margin: "4em 1em" }}>
+    <Typography variant="h6">Create Product Images</Typography>
+    <CreateRelatedMediaButton />
+    <Typography variant="body2">
+      Posts will only be published once an editor approves them
+    </Typography>
+  </div>
+);
+
 export const productEdit = (
   props: JSX.IntrinsicAttributes & EditProps<any, Error>
 ) => {
-  const notify = useNotify();
-  const dataProvider = useDataProvider();
-  const recordId = useGetRecordId();
-  const { data: previousValues } = useGetOne("products", {
-    id: recordId,
-  });
-
-  const handleSubmit = async (data: any) => {
-    try {
-      if (data && data.featured_images) {
-        const uploadedImages = await uploadImagesToSupabase(
-          data.featured_images
-        );
-        console.log({ uploadedImages });
-        if (uploadedImages.length > 0) {
-          dataProvider
-            .create("media", { data: uploadedImages })
-            .then(({ data }) => {
-              console.log({ data });
-              notify("Product update successfully");
-              // redirect("list", "posts");
-            });
-        }
-      }
-
-      // dataProvider.update("products", {
-      //   data: data,
-      //   id: recordId,
-      //   previousData: previousValues,
-      // });
-    } catch (error: any) {
-      notify(`Error: ${error.message}`, { type: "warning" });
-    }
-  };
+  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
   return (
     <Edit title={<ProductTitle />} {...props}>
-      <TabbedForm onSubmit={handleSubmit}>
+      <TabbedForm>
         {/* images */}
-        <TabbedForm.Tab label="images" sx={{ maxWidth: "40em" }}>
-          <ImageInput source="featured_images" label="Featured Images" multiple>
-            <ImageField source="src" title="title" />
-          </ImageInput>
+        <TabbedForm.Tab
+          label="images"
+          sx={{ maxWidth: "40em" }}
+          count={
+            <ReferenceManyCount
+              reference="resources_media"
+              target="entity_id"
+              sx={{ lineHeight: "inherit" }}
+            />
+          }
+        >
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            pagination={<Pagination />}
+          >
+            <Box display="flex">
+              <Box display="flex">
+                <Box>
+                  <GridList />
+                  {/* <SimpleList
+                    primaryText={
+                      <ReferenceField reference="media" source="media_id">
+                        <ImageCard source="location" />
+                      </ReferenceField>
+                    }
+                  /> */}
+                  {/* <Pagination rowsPerPageOptions={[12, 24, 48, 72]} /> */}
+                </Box>
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton />
+          </ReferenceManyField>
         </TabbedForm.Tab>
 
         {/* details */}

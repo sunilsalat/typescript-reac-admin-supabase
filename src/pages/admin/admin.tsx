@@ -20,6 +20,7 @@ import Books from "./books";
 import Laptops from "./laptops";
 import Hotel from "./property/hotel";
 import GroupedProducts from "./groupedProducts";
+import Medias from "./medias";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -59,8 +60,9 @@ function MyAdmin() {
       <Resource name="laptops" {...Laptops} />
       <Resource name="nations" {...Nations} />
       <Resource name="hotel" {...Hotel} />
-      <Resource name="currencies" />
       <Resource name="grouped_products" {...GroupedProducts} />
+      <Resource name="currencies" />
+      <Resource name="media" {...Medias} />
     </Admin>
   );
 }
