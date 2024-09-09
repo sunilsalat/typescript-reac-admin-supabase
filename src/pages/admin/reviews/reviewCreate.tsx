@@ -19,10 +19,10 @@ import CustomerReferenceField from "../users/customerReferenceField";
 import { useLocation } from "react-router-dom";
 
 const ets: { id: string; name: string }[] = [
-  { id: "1", name: "products" },
-  { id: "2", name: "spa" },
-  { id: "3", name: "restaurant" },
-  { id: "4", name: "hotel" },
+  { id: "products", name: "products" },
+  { id: "spa", name: "spa" },
+  { id: "restaurant", name: "restaurant" },
+  { id: "hotel", name: "hotel" },
 ];
 
 const findItem = (id: string): string => {

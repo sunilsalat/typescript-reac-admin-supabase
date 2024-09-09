@@ -16,8 +16,6 @@ import PressReleases from "./pressReleases";
 import Products from "./products";
 import Reviews from "./reviews";
 import Nations from "./settings/nations";
-import Books from "./books";
-import Laptops from "./laptops";
 import Hotel from "./property/hotel";
 import GroupedProducts from "./groupedProducts";
 import Medias from "./medias";
@@ -56,8 +54,6 @@ function MyAdmin() {
       <Resource name="press_releases" {...PressReleases} />
       <Resource name="products" {...Products} />
       <Resource name="reviews" {...Reviews} />
-      <Resource name="books" {...Books} />
-      <Resource name="laptops" {...Laptops} />
       <Resource name="nations" {...Nations} />
       <Resource name="hotel" {...Hotel} />
       <Resource name="grouped_products" {...GroupedProducts} />

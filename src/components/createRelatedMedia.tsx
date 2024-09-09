@@ -1,6 +1,6 @@
 import { CreateButton, useRecordContext } from "react-admin";
 
-const CreateRelatedMediaButton = () => {
+const CreateRelatedMediaButton = ({ entity_type, image_tag }: any) => {
   const record = useRecordContext();
 
   return (
@@ -10,9 +10,9 @@ const CreateRelatedMediaButton = () => {
         record
           ? {
               record: {
-                entity_type: "products",
+                entity_type: entity_type,
                 entity_id: record.id,
-                image_tag: "product_image",
+                image_tag: image_tag,
               },
             }
           : undefined

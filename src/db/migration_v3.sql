@@ -100,17 +100,32 @@ CREATE TABLE IF NOT EXISTS policies (
   deleted_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS access_policies (
+-- role_access_policies
+CREATE TABLE IF NOT EXISTS role_access_policies (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   policy_id UUID NOT NULL,
-  policy_name VARCHAR(255) UNIQUE NOT NULL,
+  policy_name VARCHAR(255) NOT NULL,
   role_name app_role,
+  location VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (policy_id) REFERENCES policies (id) ON DELETE CASCADE,
+  UNIQUE role_name, policy_id
+);
+
+-- group_access_policies
+CREATE TABLE IF NOT EXISTS group_access_policies (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  policy_id UUID NOT NULL,
+  policy_name VARCHAR(255) NOT NULL,
   group_name app_group,
   location VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (policy_id) REFERENCES policies (id) ON DELETE CASCADE
+  FOREIGN KEY (policy_id) REFERENCES policies (id) ON DELETE CASCADE, 
+  UNIQUE group_name, policy_id
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -325,7 +340,7 @@ CREATE TABLE IF NOT EXISTS organizations(
 -- property start 
 CREATE TABLE IF NOT EXISTS properties (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  orgnization_id UUID NOT NULL, -- ref
+  organization_id UUID NOT NULL, -- ref
   name VARCHAR(255) NOT NULL,
   property_type VARCHAR(255) NOT NULL,
   legal_name VARCHAR(255) DEFAULT '',
@@ -343,15 +358,14 @@ CREATE TABLE IF NOT EXISTS properties (
   global_location_number VARCHAR(255) DEFAULT '',
   voting_division_id UUID REFERENCES nations(id),
   slug VARCHAR(255) NOT NULL,
-  maximum_attende
+  maximum_attendey_capcity INTEGER,
   unique_id VARCHAR(255) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (orgnization_id) REFERENCES organizations(id)
+  FOREIGN KEY (organization_id) REFERENCES organizations(id)
 );
 
--- can we change name to winners ?
 CREATE TABLE IF NOT EXISTS properties_winners (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
@@ -364,7 +378,7 @@ CREATE TABLE IF NOT EXISTS properties_winners (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY property_id REFERENCES properties(id),
   FOREIGN KEY nomination_category_id REFERENCES nomination_categories(id)
-  -- unique porperty_id, winner_type, nomination_category, winning_year , yet to finalize
+ UNIQUE porperty_id, winner_type, nomination_category, winning_year 
 )
 
 CREATE TABLE IF NOT EXISTS properties_voting_years (
@@ -536,7 +550,7 @@ CREATE TABLE IF NOT EXISTS votes (
   property_slug VARCHAR(255) NOT NULL,
   property_id INTEGER NOT NULL,
   property_type VARCHAR(255) NOT NULL,
-  property_media JSONB,
+  property_media JSONB, 
   nomination_category_name VARCHAR(255),
   nomination_category_unique_id VARCHAR(255),
   nomination_category_id UUID,
@@ -550,9 +564,9 @@ CREATE TABLE IF NOT EXISTS votes (
   verification_code VARCHAR(255),
   verification_mail_sent_at TIMESTAMP,
   verified_at TIMESTAMP,
-  verified_via VARCHAR(255),
+  verified_via VARCHAR(255), -- should enum , find out details from existing db
   voting_year INTEGER,
-  meta JSONB DEFAULT '{}',
+  meta JSONB DEFAULT '{}', -- find out from existing db
   unique_id VARCHAR(255) UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -568,8 +582,8 @@ CREATE TABLE IF NOT EXISTS email_fingerprints (
   fingerprint JSONB DEFAULT '{}',
   is_verified BOOLEAN DEFAULT FALSE,
   verified_at TIMESTAMP,
-  verification_reference_unique_id VARCHAR(255),
-  verification_reference_type VARCHAR(255),
+  verification_reference_unique_id VARCHAR(255), 
+  verification_reference_type VARCHAR(255), -- form/order/vote/ etc...
   unique_id VARCHAR(255) NOT NULL UNIQUE,
   index_key VARCHAR(255) UNIQUE,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -579,12 +593,13 @@ CREATE TABLE IF NOT EXISTS email_fingerprints (
 
 CREATE TABLE IF NOT EXISTS settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    key VARCHAR(100) UNIQUE NOT NULL,
-    value VARCHAR(500) NOT NULL,
+    option_key VARCHAR(100) NOT NULL,
+    option_value VARCHAR(500) NOT NULL,
     Description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP
+    deleted_at TIMESTAMP,
+    UNIQUE option_key, deleted_at
 );
 
 CREATE TABLE IF NOT EXISTS invoice_settings (
@@ -592,6 +607,7 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
     perfix VARCHAR(10) NOT NULL, -- prifix should be unique
     start_number INT NOT NULL, -- start number can not be repeated
     current_number INT NOT NULL, 
+    fiscal_year_range, -- year rage as per country
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
@@ -603,7 +619,6 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
 
 
 -- NEXT DISCUSSION
--- vote, email_fingerprint >table
 -- policies discussion
 
 -- QUESTIONS

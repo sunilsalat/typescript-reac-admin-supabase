@@ -1,4 +1,5 @@
 import {
+  Button,
   Create,
   EditProps,
   getRecordFromLocation,
@@ -16,7 +17,7 @@ import {
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
 import { uploadImagesToSupabase } from "../../../db/queries/uploadImages";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const createMedia = (
   props: JSX.IntrinsicAttributes & EditProps<any, Error>
@@ -25,6 +26,7 @@ export const createMedia = (
   const dataProvider = useDataProvider();
   const redirect = useRedirect();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const createMediaAndMediaResource = async ({
     uploadedImage,
@@ -85,6 +87,11 @@ export const createMedia = (
         <ImageInput source="featured_images" label="Featured Images" multiple>
           <ImageField source="src" title="title" />
         </ImageInput>
+        <Button
+          type="button"
+          label="Go Back"
+          onClick={() => navigate(-1)} // Go back to the previous page
+        ></Button>
       </SimpleForm>
     </Create>
   );

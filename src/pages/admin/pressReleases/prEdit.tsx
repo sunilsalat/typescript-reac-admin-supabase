@@ -1,43 +1,56 @@
+import { Box } from "@mui/material";
 import {
   DateInput,
   Edit,
-  SimpleForm,
+  Pagination,
+  ReferenceManyCount,
+  ReferenceManyField,
+  TabbedForm,
   TextInput,
-  useDataProvider,
-  useGetOne,
-  useGetRecordId,
 } from "react-admin";
+import GridList from "../products/gridList";
+import CreateRelatedMediaButton from "../../../components/createRelatedMedia";
 
 export const pressReleasesEdit = () => {
-  const dataProvider = useDataProvider();
-  const recordId = useGetRecordId();
-
-  const { data: previousValues } = useGetOne("press_releases", {
-    id: recordId,
-  });
-
-  const handleSubmit = async (data: any) => {
-    try {
-      dataProvider.update("press_releases", {
-        data: data,
-        id: recordId,
-        previousData: previousValues,
-      });
-    } catch (error: any) {}
-  };
   return (
     <Edit>
-      <SimpleForm warnWhenUnsavedChanges onSubmit={handleSubmit}>
-        <TextInput disabled source="id" />
-        <TextInput source="title" />
-        <TextInput source="description" />
-        <DateInput source="date" />
-        <TextInput source="slug" />
-        <TextInput source="unique_id" />
-        <DateInput disabled source="created_at" />
-        <DateInput disabled source="updated_at" />
-        <DateInput disabled source="deleted_at" />
-      </SimpleForm>
+      <TabbedForm warnWhenUnsavedChanges>
+        <TabbedForm.Tab
+          label="images"
+          sx={{ maxWidth: "60em" }}
+          count={
+            <ReferenceManyCount
+              reference="resources_media"
+              target="entity_id"
+              sx={{ lineHeight: "inherit" }}
+            />
+          }
+        >
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            pagination={<Pagination />}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              entity_type="press_releases"
+              image_tag="press_release_image"
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
+        <TabbedForm.Tab label="info">
+          <TextInput source="title" />
+          <TextInput source="description" />
+          <DateInput source="date" />
+          <TextInput source="slug" />
+          <TextInput source="unique_id" />
+          <DateInput disabled source="created_at" />
+        </TabbedForm.Tab>
+      </TabbedForm>
     </Edit>
   );
 };

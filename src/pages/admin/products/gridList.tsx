@@ -1,19 +1,11 @@
 import { useTheme, useMediaQuery } from "@mui/material";
 import { Box, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
-import {
-  useCreatePath,
-  NumberField,
-  useListContext,
-  TextField,
-  ReferenceField,
-  useGetMany,
-} from "react-admin";
+import { useCreatePath, useListContext, useGetMany } from "react-admin";
 import { Link } from "react-router-dom";
-import ImageCard from "./imageCard";
 
 const GridList = () => {
   const { isPending } = useListContext();
-  return isPending ? <LoadedGridList /> : <LoadedGridList />;
+  return isPending ? <LoadingGridList /> : <LoadedGridList />;
 };
 
 const useColsForWidth = () => {
@@ -64,31 +56,15 @@ const LoadedGridList = () => {
             component={Link}
             key={index}
             to={createPath({
-              resource: "products",
+              resource: "media",
               id: record.id,
-              type: "edit",
+              type: "show",
             })}
           >
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDo890dsxpB5UCLQFdVBWmK4qVxTrsrLEEUg&s"
-              alt=""
-            />
+            <img src={record.location} alt={record.originalname} />
 
             <ImageListItemBar
               title={record.originalname}
-              subtitle={
-                <span>
-                  <TextField
-                    source="price"
-                    record={record}
-                    color="inherit"
-                    sx={{
-                      display: "inline",
-                      fontSize: "1em",
-                    }}
-                  />
-                </span>
-              }
               sx={{
                 background:
                   "linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)",

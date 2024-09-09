@@ -13,7 +13,7 @@ import {
 
 export const productList = () => (
   <List
-    filters={[<SearchInput source="name" alwaysOn />]}
+    filters={[<SearchInput source="name@ilike" alwaysOn />]}
     actions={
       <TopToolbar>
         <SelectColumnsButton />

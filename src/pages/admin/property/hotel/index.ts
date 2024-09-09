@@ -1,12 +1,12 @@
 import icon from "@mui/icons-material/Hotel";
 import { hotelCreate } from "./createHotel";
-import { EditGuesser } from "react-admin";
 import { listHotel } from "./listHotel";
+import { hotelEdit } from "./editHotel";
 
 export default {
   create: hotelCreate,
   list: listHotel,
-  edit: EditGuesser,
+  edit: hotelEdit,
   icon: icon,
   recordRepresentation: "name",
   options: { label: "Hotel" },

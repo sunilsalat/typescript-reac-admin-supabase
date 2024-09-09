@@ -5,30 +5,23 @@ import {
   Edit,
   EditButton,
   EditProps,
-  ImageField,
-  ImageInput,
   Pagination,
-  ReferenceArrayField,
   ReferenceField,
   ReferenceManyCount,
   ReferenceManyField,
   required,
-  SimpleList,
   TabbedForm,
   TextField,
-  TextInput,
   useRecordContext,
-  WithRecord,
 } from "react-admin";
 import { ProductEditDetails } from "./productEditDetail";
 import StarRatingField from "../reviews/StarRatingField";
 import CreateRelatedReviewButton from "./CreateRelatedReviewButton";
 import CreateGroupedProductButton from "./createGroupedProductButton";
 import { JSX } from "react/jsx-runtime";
-import CreateRelatedMediaButton from "./createRelatedImageButton";
 import { Box, Typography, useMediaQuery } from "@mui/material";
-import ImageCard from "./imageCard";
 import GridList from "./gridList";
+import CreateRelatedMediaButton from "../../../components/createRelatedMedia";
 
 const RichTextInput = React.lazy(() =>
   import("ra-input-rich-text").then((module) => ({
@@ -62,7 +55,7 @@ export const productEdit = (
         {/* images */}
         <TabbedForm.Tab
           label="images"
-          sx={{ maxWidth: "40em" }}
+          sx={{ maxWidth: "60em" }}
           count={
             <ReferenceManyCount
               reference="resources_media"
@@ -87,11 +80,13 @@ export const productEdit = (
                       </ReferenceField>
                     }
                   /> */}
-                  {/* <Pagination rowsPerPageOptions={[12, 24, 48, 72]} /> */}
                 </Box>
               </Box>
             </Box>
-            <CreateRelatedMediaButton />
+            <CreateRelatedMediaButton
+              entity_type="products"
+              image_tag="product_image"
+            />
           </ReferenceManyField>
         </TabbedForm.Tab>
 

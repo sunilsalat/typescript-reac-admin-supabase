@@ -11,7 +11,7 @@ const CreateRelatedReviewButton = () => {
           ? {
               record: {
                 entity_id: record.id,
-                entity_type: "1", // products
+                entity_type: "products",
               },
             }
           : undefined

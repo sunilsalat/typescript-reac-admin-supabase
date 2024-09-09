@@ -1,11 +1,16 @@
+import { Box } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
   ArrayInput,
   AutocompleteArrayInput,
   Create,
   CreateProps,
+  EmailField,
+  Pagination,
   ReferenceArrayInput,
   ReferenceInput,
+  ReferenceManyCount,
+  ReferenceManyField,
   required,
   SelectArrayInput,
   SimpleFormIterator,
@@ -13,6 +18,8 @@ import {
   TextInput,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
+import GridList from "../../products/gridList";
+import CreateRelatedMediaButton from "../../../../components/createRelatedMedia";
 
 const req = [required()];
 
@@ -26,6 +33,12 @@ export const hotelCreate = (
         <TextInput source="name" validate={req} />
         <TextInput source="legal_name" validate={req} />
         <TextInput source="tagline" validate={req} />
+        <TextInput
+          source="property_type"
+          defaultValue="hotel"
+          disabled
+          validate={req}
+        />
         <RichTextInput source="description" label="" />{" "}
       </TabbedForm.Tab>
 
@@ -36,10 +49,11 @@ export const hotelCreate = (
           source="global_location_number"
           validate={req}
         />
+        <TextInput type="email" label="Email" source="email" />
         <TextInput label="Start Ratings" source="star_rating" validate={req} />
         <ReferenceInput
           label="Parent Organization"
-          source="organization_id"
+          source="orgnization_id"
           reference="organizations"
         />
       </TabbedForm.Tab>
@@ -70,7 +84,7 @@ export const hotelCreate = (
           ]}
         />
         <ReferenceArrayInput
-          source="accepted_currencies"
+          source="currencies_accepted"
           reference="currencies"
         >
           <AutocompleteArrayInput
