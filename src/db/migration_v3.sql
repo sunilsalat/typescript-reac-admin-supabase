@@ -340,7 +340,7 @@ CREATE TABLE IF NOT EXISTS organizations(
 -- property start 
 CREATE TABLE IF NOT EXISTS properties (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  organization_id UUID NOT NULL, -- ref
+  organization_id UUID NOT NULL, 
   name VARCHAR(255) NOT NULL,
   property_type VARCHAR(255) NOT NULL,
   legal_name VARCHAR(255) DEFAULT '',
@@ -458,7 +458,7 @@ CREATE TABLE IF NOT EXISTS spa (
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS restaurant (
-  cuisines TEXT[],
+  cuisines TEXT[]
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS hotel (

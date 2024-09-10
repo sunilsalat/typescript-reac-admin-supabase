@@ -15,7 +15,7 @@ import {
 
 export const listHotel = () => (
   <List
-    filters={[<SearchInput source="name" alwaysOn />]}
+    filters={[<SearchInput source="name@ilike" alwaysOn />]}
     actions={
       <TopToolbar>
         <SelectColumnsButton />
@@ -25,7 +25,7 @@ export const listHotel = () => (
     }
   >
     <DatagridConfigurable>
-      <ReferenceField source="orgnization_id" reference="orgnizations" />
+      <ReferenceField source="organization_id" reference="organizations" />
       <TextField source="name" />
       <TextField source="legal_name" />
       <TextField source="tagline" />

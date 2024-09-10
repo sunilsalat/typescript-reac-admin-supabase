@@ -52,44 +52,6 @@ export const productEdit = (
   return (
     <Edit title={<ProductTitle />} {...props}>
       <TabbedForm>
-        {/* images */}
-        <TabbedForm.Tab
-          label="images"
-          sx={{ maxWidth: "60em" }}
-          count={
-            <ReferenceManyCount
-              reference="resources_media"
-              target="entity_id"
-              sx={{ lineHeight: "inherit" }}
-            />
-          }
-        >
-          <ReferenceManyField
-            reference="resources_media"
-            target="entity_id"
-            pagination={<Pagination />}
-          >
-            <Box display="flex">
-              <Box display="flex">
-                <Box>
-                  <GridList />
-                  {/* <SimpleList
-                    primaryText={
-                      <ReferenceField reference="media" source="media_id">
-                        <ImageCard source="location" />
-                      </ReferenceField>
-                    }
-                  /> */}
-                </Box>
-              </Box>
-            </Box>
-            <CreateRelatedMediaButton
-              entity_type="products"
-              image_tag="product_image"
-            />
-          </ReferenceManyField>
-        </TabbedForm.Tab>
-
         {/* details */}
         <TabbedForm.Tab label="details" sx={{ maxWidth: "40em" }}>
           <ProductEditDetails />
@@ -166,10 +128,41 @@ export const productEdit = (
                 },
               }}
             >
-              <ReferenceField source="group_id" reference="products" />
               <ReferenceField source="product_id" reference="products" />
             </Datagrid>
             <CreateGroupedProductButton />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
+
+        {/* images */}
+        <TabbedForm.Tab
+          label="images"
+          sx={{ maxWidth: "60em" }}
+          count={
+            <ReferenceManyCount
+              reference="resources_media"
+              target="entity_id"
+              sx={{ lineHeight: "inherit" }}
+              filter={{ "deleted_at@is": null }}
+            />
+          }
+        >
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            pagination={<Pagination />}
+            filter={{ "deleted_at@is": null }}
+            sort={{ field: "position", order: "DESC" }}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              entity_type="products"
+              image_tag="product_image"
+            />
           </ReferenceManyField>
         </TabbedForm.Tab>
       </TabbedForm>

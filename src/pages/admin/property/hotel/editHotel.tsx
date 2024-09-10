@@ -50,11 +50,12 @@ export const hotelEdit = (
             </Box>
           </Box>
           <CreateRelatedMediaButton
-            entity_type="press_releases"
-            image_tag="press_release_image"
+            entity_type="hotel"
+            image_tag="hotel_image"
           />
         </ReferenceManyField>
       </TabbedForm.Tab>
+
       {/* basic info */}
       <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
         <TextInput source="name" validate={req} />
@@ -98,9 +99,9 @@ export const hotelEdit = (
           label="Accepted Payment Method"
           source="accepted_payment_method"
           choices={[
-            { id: "admin", name: "Master Card" },
-            { id: "u001", name: "Visa Card" },
-            { id: "u002", name: "Cash" },
+            { id: "Master Card", name: "Master Card" },
+            { id: "Visa Card", name: "Visa Card" },
+            { id: "Cash", name: "Cash" },
           ]}
         />
         <ReferenceArrayInput

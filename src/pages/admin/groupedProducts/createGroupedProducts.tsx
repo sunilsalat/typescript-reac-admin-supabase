@@ -2,11 +2,15 @@ import {
   Create,
   CreateProps,
   getRecordFromLocation,
+  Labeled,
+  ReferenceField,
   ReferenceInput,
   SimpleForm,
+  TextField,
   TextInput,
   useNotify,
   useRedirect,
+  WithRecord,
 } from "react-admin";
 import { useLocation } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
@@ -36,17 +40,13 @@ export const groupedProductCreate = (
   return (
     <Create {...props} mutationOptions={{ onSuccess }}>
       <SimpleForm>
-        <ReferenceInput
-          source="group_id"
-          reference="products"
-          filterToQuery={filterToQuery}
-        />
+        <ReferenceField source="group_id" reference="products" />
+
         <ReferenceInput
           source="product_id"
           reference="products"
           filterToQuery={filterToQuery}
         />
-
         <TextInput label="Quantity" source="quantity" />
       </SimpleForm>
     </Create>

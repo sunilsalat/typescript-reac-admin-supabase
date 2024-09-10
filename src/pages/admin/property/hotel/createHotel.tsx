@@ -1,16 +1,11 @@
-import { Box } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
   ArrayInput,
   AutocompleteArrayInput,
   Create,
   CreateProps,
-  EmailField,
-  Pagination,
   ReferenceArrayInput,
   ReferenceInput,
-  ReferenceManyCount,
-  ReferenceManyField,
   required,
   SelectArrayInput,
   SimpleFormIterator,
@@ -18,8 +13,6 @@ import {
   TextInput,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
-import GridList from "../../products/gridList";
-import CreateRelatedMediaButton from "../../../../components/createRelatedMedia";
 
 const req = [required()];
 
@@ -39,7 +32,7 @@ export const hotelCreate = (
           disabled
           validate={req}
         />
-        <RichTextInput source="description" label="" />{" "}
+        <RichTextInput source="description" label="" />
       </TabbedForm.Tab>
 
       {/* misc_info */}
@@ -49,11 +42,11 @@ export const hotelCreate = (
           source="global_location_number"
           validate={req}
         />
-        <TextInput type="email" label="Email" source="email" />
-        <TextInput label="Start Ratings" source="star_rating" validate={req} />
+        <TextInput label="Email" source="email" />
+        <TextInput label="Star Ratings" source="star_rating" validate={req} />
         <ReferenceInput
           label="Parent Organization"
-          source="orgnization_id"
+          source="organization_id"
           reference="organizations"
         />
       </TabbedForm.Tab>
@@ -62,7 +55,7 @@ export const hotelCreate = (
       <TabbedForm.Tab label="Amenity Feature">
         <ArrayInput source="amenity_feature">
           <SimpleFormIterator disableReordering inline sx={{ width: 200 }}>
-            <TextInput source="" hiddenLabel helperText={false} />
+            <TextInput source="name" hiddenLabel helperText={false} />
           </SimpleFormIterator>
         </ArrayInput>
 

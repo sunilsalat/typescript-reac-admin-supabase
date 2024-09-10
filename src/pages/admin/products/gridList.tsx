@@ -1,7 +1,8 @@
-import { useTheme, useMediaQuery } from "@mui/material";
+import { useTheme, useMediaQuery, IconButton } from "@mui/material";
 import { Box, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
-import { useCreatePath, useListContext, useGetMany } from "react-admin";
-import { Link } from "react-router-dom";
+import { useListContext, useGetMany, useUpdate } from "react-admin";
+import CancelIcon from "@mui/icons-material/Cancel"; // Import cancel icon
+import { useEffect, useState } from "react";
 
 const GridList = () => {
   const { isPending } = useListContext();
@@ -42,24 +43,59 @@ const LoadingGridList = () => {
 const LoadedGridList = () => {
   const { data } = useListContext();
   const cols = useColsForWidth();
-  const createPath = useCreatePath();
+  const [update] = useUpdate();
+  const [images, setImages] = useState([]);
+
+  const [draggedIndex, setDraggedIndex] = useState(null);
+
   const ids = data?.map((i: any) => i.media_id);
-  const { data: media_data } = useGetMany("media", { ids: ids });
+  let { data: media_data, isPending }: any = useGetMany("media", {
+    ids: ids,
+  });
+
+  const handleDragStart = (index: any) => {
+    setDraggedIndex(index.index);
+  };
+
+  const handleDragOver = (event: any) => {
+    event.preventDefault(); // Necessary to allow dropping
+  };
+
+  const handleDrop = (index: any) => {
+    if (draggedIndex === null) return;
+    const updatedImages: any = [...images];
+    const [draggedImage] = updatedImages.splice(draggedIndex, 1);
+    updatedImages.splice(index.index, 0, draggedImage);
+    setImages(updatedImages);
+    setDraggedIndex(null);
+  };
+
+  const handleDelete = async (record: any) => {
+    update("media", {
+      id: record.id,
+      data: { deleted_at: new Date() },
+      previousData: record,
+    });
+  };
+
+  useEffect(() => {
+    setImages(media_data);
+  }, [isPending]);
 
   if (!data || !media_data) return null;
 
   return (
     <ImageList rowHeight={180} cols={cols} sx={{ m: 0 }}>
-      {media_data.map((record, index) => {
+      {images?.map((record: any, index: any) => {
         return (
           <ImageListItem
-            component={Link}
-            key={index}
-            to={createPath({
-              resource: "media",
-              id: record.id,
-              type: "show",
-            })}
+            key={record.id}
+            onDragStart={() => handleDragStart({ index, id: record.id })}
+            onDragOver={handleDragOver}
+            onDrop={() => handleDrop({ index, id: record.id })}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
           >
             <img src={record.location} alt={record.originalname} />
 
@@ -69,6 +105,19 @@ const LoadedGridList = () => {
                 background:
                   "linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)",
               }}
+              actionIcon={
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleDelete(record);
+                  }}
+                  sx={{
+                    color: "white",
+                  }}
+                >
+                  <CancelIcon />
+                </IconButton>
+              }
             />
           </ImageListItem>
         );
