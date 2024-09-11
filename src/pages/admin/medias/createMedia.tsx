@@ -27,6 +27,7 @@ export const createMedia = (
   const redirect = useRedirect();
   const location = useLocation();
   const navigate = useNavigate();
+  const record = useRecordContext();
 
   const createMediaAndMediaResource = async ({
     uploadedImage,
@@ -67,7 +68,7 @@ export const createMedia = (
           const resource_media = {
             entity_id: data.entity_id,
             entity_type: data.entity_type,
-            media_type: data.media_type,
+            media_type: data.image_tag,
             position: data.position,
           };
           return createMediaAndMediaResource({ uploadedImage, resource_media });
@@ -84,7 +85,11 @@ export const createMedia = (
   return (
     <Create {...props}>
       <SimpleForm onSubmit={handleSubmit}>
-        <ImageInput source="featured_images" label="Featured Images" multiple>
+        <ImageInput
+          source="featured_images"
+          label="Featured Images"
+          multiple={record?.select_multiple}
+        >
           <ImageField source="src" title="title" />
         </ImageInput>
         <Button

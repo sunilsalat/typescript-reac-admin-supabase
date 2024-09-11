@@ -1,17 +1,24 @@
-import { Box } from "@mui/material";
+import { Box, Divider, TextField, Typography } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
   ArrayInput,
   AutocompleteArrayInput,
   CreateProps,
+  Datagrid,
   Edit,
+  ImageField,
+  ImageInput,
+  NumberInput,
   Pagination,
   ReferenceArrayInput,
+  ReferenceField,
   ReferenceInput,
   ReferenceManyCount,
   ReferenceManyField,
+  ReferenceOneField,
   required,
   SelectArrayInput,
+  SimpleForm,
   SimpleFormIterator,
   TabbedForm,
   TextInput,
@@ -19,103 +26,213 @@ import {
 import { JSX } from "react/jsx-runtime";
 import GridList from "../../products/gridList";
 import CreateRelatedMediaButton from "../../../../components/createRelatedMedia";
+import { BasicInfo } from "../basicInfo";
+import { MiscInfo } from "../miscInfo";
+import { AmenityFeature } from "../amenityFeature";
+import { PaymentInfo } from "../paymentInfo";
+import { AddressField } from "../../address/addressField";
 
 const req = [required()];
 
 export const hotelEdit = (
   props: JSX.IntrinsicAttributes & CreateProps<any, Error, any>
-) => (
-  <Edit {...props}>
-    {/* images */}
-    <TabbedForm>
-      <TabbedForm.Tab
-        label="images"
-        sx={{ maxWidth: "60em" }}
-        count={
-          <ReferenceManyCount
+) => {
+  return (
+    <Edit {...props}>
+      <TabbedForm>
+        {/* basic info */}
+        <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
+          <BasicInfo />
+          <ReferenceManyField
             reference="resources_media"
             target="entity_id"
-            sx={{ lineHeight: "inherit" }}
-          />
-        }
-      >
-        <ReferenceManyField
-          reference="resources_media"
-          target="entity_id"
-          pagination={<Pagination />}
-        >
-          <Box display="flex">
-            <Box>
-              <GridList />
+            filter={{ media_type: "basic_info_image", "deleted_at@is": null }}
+            perPage={1}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
             </Box>
-          </Box>
-          <CreateRelatedMediaButton
-            entity_type="hotel"
-            image_tag="hotel_image"
-          />
-        </ReferenceManyField>
-      </TabbedForm.Tab>
+            <CreateRelatedMediaButton
+              button_title="Add Info Image"
+              entity_type="hotel"
+              image_tag="basic_info_image"
+              select_multiple="false"
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
 
-      {/* basic info */}
-      <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
-        <TextInput source="name" validate={req} />
-        <TextInput source="legal_name" validate={req} />
-        <TextInput source="tagline" validate={req} />
-        <RichTextInput source="description" label="" />{" "}
-      </TabbedForm.Tab>
+        {/* hotel description */}
+        <TabbedForm.Tab label="hotel description">
+          <RichTextInput source="description" label="Hotel Description" />
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            filter={{
+              media_type: "hotel_description_image",
+              "deleted_at@is": null,
+            }}
+            perPage={1}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              button_title="Add Hotel Description Image"
+              entity_type="hotel"
+              image_tag="hotel_description_image"
+              select_multiple="false"
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
 
-      {/* misc_info */}
-      <TabbedForm.Tab label="misc info">
-        <TextInput
-          label="Global Location Number"
-          source="global_location_number"
-          validate={req}
-        />
-        <TextInput label="Star Ratings" source="star_rating" />
-        <ReferenceInput
-          label="Parent Organization"
-          source="organization_id"
-          reference="organizations"
-        />
-      </TabbedForm.Tab>
+        {/* hotel contact */}
+        <TabbedForm.Tab label="Hotel Contact">
+          <ReferenceManyField
+            target="entity_id"
+            reference="resources_address"
+            filter={{ entity_type: "hotel", "deleted_at@is": null }}
+          >
+            {/* <Datagrid
+              sx={{
+                width: "100%",
+                "& .column-comment": {
+                  maxWidth: "20em",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                },
+              }}
+            >
+              <ReferenceField source="address_id" reference="addresses"> */}
+            <AddressField />
+            {/* </ReferenceField>
+            </Datagrid> */}
+          </ReferenceManyField>
+        </TabbedForm.Tab>
 
-      {/* amenity feature */}
-      <TabbedForm.Tab label="Amenity Feature">
-        <ArrayInput source="amenity_feature">
-          <SimpleFormIterator disableReordering inline sx={{ width: 200 }}>
-            <TextInput source="" hiddenLabel helperText={false} />
-          </SimpleFormIterator>
-        </ArrayInput>
+        {/* misc_info */}
+        <TabbedForm.Tab label="misc info">
+          <MiscInfo />
+        </TabbedForm.Tab>
 
-        <RichTextInput
-          source="description"
-          label="Amenity Feature Description"
-        />
+        {/* amenity feature */}
+        <TabbedForm.Tab label="Amenity Feature">
+          <AmenityFeature />
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            filter={{ media_type: "amenity_image", "deleted_at@is": null }}
+            perPage={1}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              button_title="Add Amenity Image"
+              entity_type="hotel"
+              image_tag="amenity_image"
+              select_multiple="false"
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
 
         {/* Payment Info */}
-      </TabbedForm.Tab>
-      <TabbedForm.Tab label="Payment Info">
-        <SelectArrayInput
-          label="Accepted Payment Method"
-          source="accepted_payment_method"
-          choices={[
-            { id: "Master Card", name: "Master Card" },
-            { id: "Visa Card", name: "Visa Card" },
-            { id: "Cash", name: "Cash" },
-          ]}
-        />
-        <ReferenceArrayInput
-          source="currencies_accepted"
-          reference="currencies"
+        <TabbedForm.Tab label="Payment Info">
+          <PaymentInfo />
+        </TabbedForm.Tab>
+
+        {/* Featured hotel images */}
+        <TabbedForm.Tab
+          label="Featured Images"
+          sx={{ maxWidth: "60em" }}
+          count={
+            <ReferenceManyCount
+              reference="resources_media"
+              target="entity_id"
+              sx={{ lineHeight: "inherit" }}
+              filter={{ media_type: "featured_image", "deleted_at@is": null }}
+            />
+          }
         >
-          <AutocompleteArrayInput
-            filterToQuery={(searchText: string) => ({
-              "name@ilike": `%${searchText}%`,
-            })}
-          />
-        </ReferenceArrayInput>
-        <TextInput label="Price Range" source="price_range" />
-      </TabbedForm.Tab>
-    </TabbedForm>
-  </Edit>
-);
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            pagination={<Pagination />}
+            filter={{ media_type: "featured_image", "deleted_at@is": null }}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              entity_type="hotel"
+              image_tag="featured_image"
+              button_title="Add Feature Image"
+              select_multiple={true}
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
+
+        {/*gallery images */}
+        <TabbedForm.Tab
+          label="gallery images"
+          sx={{ maxWidth: "60em" }}
+          count={
+            <ReferenceManyCount
+              reference="resources_media"
+              target="entity_id"
+              sx={{ lineHeight: "inherit" }}
+              filter={{ media_type: "gallery_image", "deleted_at@is": null }}
+            />
+          }
+        >
+          <ReferenceManyField
+            reference="resources_media"
+            target="entity_id"
+            pagination={<Pagination />}
+            filter={{ media_type: "gallery_image", "deleted_at@is": null }}
+          >
+            <Box display="flex">
+              <Box>
+                <GridList />
+              </Box>
+            </Box>
+            <CreateRelatedMediaButton
+              button_title="Add Gallery Images"
+              entity_type="hotel"
+              image_tag="gallery_image"
+              select_multiple={true}
+            />
+          </ReferenceManyField>
+        </TabbedForm.Tab>
+
+        {/* bookings */}
+
+        {/* voting */}
+        {/* - nomination_categories, voting_devision, voting_years */}
+
+        {/* winner list */}
+        {/*  */}
+
+        {/* video */}
+
+        {/* partner logo */}
+
+        {/* visibility */}
+
+        {/* hotel type */}
+
+        {/* tagline image */}
+
+        {/* tagline image style */}
+      </TabbedForm>
+    </Edit>
+  );
+};

@@ -70,12 +70,15 @@ const LoadedGridList = () => {
     setDraggedIndex(null);
   };
 
-  const handleDelete = async (record: any) => {
+  const handleDelete = async (index: any) => {
     update("media", {
-      id: record.id,
+      id: index.id,
       data: { deleted_at: new Date() },
-      previousData: record,
+      previousData: index,
     });
+
+    const updateImage = images.filter((i: any) => i.id !== index.id);
+    setImages(updateImage);
   };
 
   useEffect(() => {
@@ -109,7 +112,7 @@ const LoadedGridList = () => {
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleDelete(record);
+                    handleDelete({ index, id: record.id });
                   }}
                   sx={{
                     color: "white",

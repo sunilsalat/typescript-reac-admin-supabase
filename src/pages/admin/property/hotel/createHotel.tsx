@@ -4,17 +4,38 @@ import {
   AutocompleteArrayInput,
   Create,
   CreateProps,
+  NumberInput,
   ReferenceArrayInput,
   ReferenceInput,
   required,
   SelectArrayInput,
+  SelectInput,
   SimpleFormIterator,
   TabbedForm,
   TextInput,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
+import { BasicInfo } from "../basicInfo";
+import { MiscInfo } from "../miscInfo";
+import { AmenityFeature } from "../amenityFeature";
+import { PaymentInfo } from "../paymentInfo";
 
 const req = [required()];
+
+const choices = [
+  { id: "hotel", name: "Hotel" },
+  { id: "retreat", name: "Retreat" },
+  { id: "resort", name: "Resort" },
+  { id: "villa", name: "Villa" },
+  { id: "self catering", name: "Self Catering" },
+  { id: "lodge", name: "Lodge" },
+  { id: "sanctury", name: "Sanctury" },
+  { id: "service apartment", name: "Service Apartment" },
+  { id: "camp", name: "Camp" },
+  { id: "tented camp", name: "Tented Camp" },
+  { id: "game reserve", name: "Game Reserve" },
+  { id: "botique hotel", name: "Botique Hotel" },
+];
 
 export const hotelCreate = (
   props: JSX.IntrinsicAttributes & CreateProps<any, Error, any>
@@ -23,70 +44,27 @@ export const hotelCreate = (
     <TabbedForm>
       {/* basic info */}
       <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
-        <TextInput source="name" validate={req} />
-        <TextInput source="legal_name" validate={req} />
-        <TextInput source="tagline" validate={req} />
-        <TextInput
-          source="property_type"
+        <BasicInfo />
+        <SelectInput
+          source="hotel_type"
+          choices={choices}
           defaultValue="hotel"
-          disabled
-          validate={req}
         />
-        <RichTextInput source="description" label="" />
       </TabbedForm.Tab>
 
       {/* misc_info */}
       <TabbedForm.Tab label="misc info">
-        <TextInput
-          label="Global Location Number"
-          source="global_location_number"
-          validate={req}
-        />
-        <TextInput label="Email" source="email" />
-        <TextInput label="Star Ratings" source="star_rating" validate={req} />
-        <ReferenceInput
-          label="Parent Organization"
-          source="organization_id"
-          reference="organizations"
-        />
+        <MiscInfo />
       </TabbedForm.Tab>
 
       {/* amenity feature */}
       <TabbedForm.Tab label="Amenity Feature">
-        <ArrayInput source="amenity_feature">
-          <SimpleFormIterator disableReordering inline sx={{ width: 200 }}>
-            <TextInput source="name" hiddenLabel helperText={false} />
-          </SimpleFormIterator>
-        </ArrayInput>
-
-        <RichTextInput
-          source="description"
-          label="Amenity Feature Description"
-        />
-
-        {/* Payment Info */}
+        <AmenityFeature />
       </TabbedForm.Tab>
+
+      {/* Payment Info */}
       <TabbedForm.Tab label="Payment Info">
-        <SelectArrayInput
-          label="Accepted Payment Method"
-          source="accepted_payment_method"
-          choices={[
-            { id: "admin", name: "Master Card" },
-            { id: "u001", name: "Visa Card" },
-            { id: "u002", name: "Cash" },
-          ]}
-        />
-        <ReferenceArrayInput
-          source="currencies_accepted"
-          reference="currencies"
-        >
-          <AutocompleteArrayInput
-            filterToQuery={(searchText: string) => ({
-              "name@ilike": `%${searchText}%`,
-            })}
-          />
-        </ReferenceArrayInput>
-        <TextInput label="Price Range" source="price_range" />
+        <PaymentInfo />
       </TabbedForm.Tab>
     </TabbedForm>
   </Create>

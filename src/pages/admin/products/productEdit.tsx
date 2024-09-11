@@ -52,8 +52,8 @@ export const productEdit = (
   return (
     <Edit title={<ProductTitle />} {...props}>
       <TabbedForm>
-        {/* details */}
-        <TabbedForm.Tab label="details" sx={{ maxWidth: "40em" }}>
+        {/* Basic Info */}
+        <TabbedForm.Tab label="Basic Info" sx={{ maxWidth: "40em" }}>
           <ProductEditDetails />
         </TabbedForm.Tab>
 
@@ -89,9 +89,6 @@ export const productEdit = (
                 },
               }}
             >
-              <DateField source="created_at" />
-              {/* <CustomerReferenceField source="customer_id" /> */}
-              <StarRatingField label="rating" source="overall_rating" />
               <TextField source="reviewer_name" />
               <TextField source="reviewer_note" />
               <TextField source="status" />

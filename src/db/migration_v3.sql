@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS resources_media (
   entity_id UUID NOT NULL,
   media_id UUID NOT NULL,
   "position" INT DEFAULT 0,
-  media_type TEXT DEFAULT 'GALLERY' -- FEATURED/GALLERY/LOGO/TAGLINE
+  media_type TEXT DEFAULT NOT NULL, -- FEATURED/GALLERY/LOGO/TAGLINE
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -351,106 +351,22 @@ CREATE TABLE IF NOT EXISTS properties (
   amenity_feature_description TEXT DEFAULT '',
   "description" TEXT DEFAULT '',
   email VARCHAR(255) NOT NULL,
+  telephone VARCHAR(255) NOT NULL,
+  contact_type VARCHAR(255) NOT NULL,
   star_rating INTEGER,
   accepted_payment_method text[],
+  availaible_languages UUID [],
   currencies_accepted UUID[],
   visibility VARCHAR(50) DEFAULT 'PUBLIC',
   global_location_number VARCHAR(255) DEFAULT '',
   voting_division_id UUID REFERENCES nations(id),
   slug VARCHAR(255) NOT NULL,
-  maximum_attendey_capcity INTEGER,
+  maximum_attendee_capacity INTEGER,
   unique_id VARCHAR(255) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
   FOREIGN KEY (organization_id) REFERENCES organizations(id)
-);
-
-CREATE TABLE IF NOT EXISTS properties_winners (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  property_name ,
-  nomination_category_id UUID not null,
-  nomination_category_name varchar not null, 
-  winning_year,
-  winner_type enum (global, contient, region, division) -- entity_type
-  winner_type_id  -- entity_id
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY property_id REFERENCES properties(id),
-  FOREIGN KEY nomination_category_id REFERENCES nomination_categories(id)
- UNIQUE porperty_id, winner_type, nomination_category, winning_year 
-)
-
-CREATE TABLE IF NOT EXISTS properties_voting_years (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  voting_year VARCHAR NOT NULL , -- add max yr 2099
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY property_id REFERENCES properties(id),
-  UNIQUE property_id, voting_year
-)
-
-CREATE TABLE IF NOT EXISTS featured_properties (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  property_type VARCHAR UNIQUE NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY property_id REFERENCES properties(id),
-  UNIQUE property_type, deleted_at
-)
-
-CREATE TABLE IF NOT EXISTS properties_nomination_categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  nomination_category_id UUID NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY property_id REFERENCES properties(id),
-  FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id),
-  UNIQUE property_id, nomination_category_id
-) 
-
-CREATE TABLE IF NOT EXISTS properties_social_links (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY property_id REFERENCES properties(id)
-
-)
-
--- TBD
--- find out is_font_color_blak and want_to_lear_more usage
-CREATE TABLE IF NOT EXISTS properties_settings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  overlay_mask BOOLEAN DEFAULT FALSE, 
-  review_email VARCHAR(255),
-  is_font_color_black BOOLEAN DEFAULT TRUE, 
-  want_to_learn_more BOOLEAN DEFAULT NULL, 
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP
-)
-
--- similar as porperty social links
-CREATE TABLE IF NOT EXISTS properties_booking_links (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
-  "type" VARCHAR(255) NOT NULL, -- phone_number | whatsapp_number | booking_url | etc
-  "value" VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP
-  FOREIGN KEY property_id REFERENCES properties(id)
 );
 
 CREATE TABLE IF NOT EXISTS spa (
@@ -462,10 +378,102 @@ CREATE TABLE IF NOT EXISTS restaurant (
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS hotel (
+  hotel_type VARCHAR(255),
   checkin_time VARCHAR(255),
   checkout_time VARCHAR(255),
   number_of_rooms INTEGER
 ) INHERITS (properties);
+
+
+CREATE TYPE winner_types AS ENUM ('global', 'continent', 'region', 'division');
+
+CREATE TABLE IF NOT EXISTS properties_winners (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  property_name VARCHAR(255) NOT NULL,
+  nomination_category_id UUID NOT NULL,
+  nomination_category_name VARCHAR(255) NOT NULL, 
+  winning_year VARCHAR NOT NULL,
+  winner_type  winner_types NOT NULL,
+  winner_type_id UUID NOT NULL, 
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id),
+  FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id),
+  UNIQUE (property_id, winner_type, nomination_category_id, winning_year )
+)
+
+CREATE TABLE IF NOT EXISTS properties_voting_years (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  voting_year VARCHAR NOT NULL , -- add max yr 2099
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id),
+  UNIQUE (property_id, voting_year)
+)
+
+CREATE TABLE IF NOT EXISTS properties_nomination_categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  nomination_category_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id),
+  FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id),
+  UNIQUE (property_id, nomination_category_id)
+) 
+
+CREATE TABLE IF NOT EXISTS featured_properties (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  property_type VARCHAR UNIQUE NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id),
+  UNIQUE (property_type, deleted_at)
+)
+
+CREATE TABLE IF NOT EXISTS properties_social_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id)
+)
+
+-- find out is_font_color_blak and want_to_lear_more usage
+CREATE TABLE IF NOT EXISTS properties_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  overlay_mask BOOLEAN DEFAULT FALSE, 
+  review_email VARCHAR(255),
+  is_font_color_black BOOLEAN DEFAULT TRUE, 
+  want_to_learn_more BOOLEAN DEFAULT NULL, 
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id),
+  UNIQUE (property_id)
+)
+
+-- similar as porperty social links
+CREATE TABLE IF NOT EXISTS properties_booking_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
+  "type" VARCHAR(255) NOT NULL, -- phone_number | whatsapp_number | booking_url | etc
+  "value" VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES properties(id)
+);
+
 
 -- TBD
 -- What fields will goes in
