@@ -1,44 +1,35 @@
-import { Box, TextField, Typography } from "@mui/material";
-import { useState } from "react";
 import {
   Datagrid,
+  EditButton,
   ListContextProvider,
-  Title,
+  ReferenceField,
+  TextField,
   useGetMany,
+  useList,
   useListContext,
 } from "react-admin";
+import CreateRelatedAddresButton from "../../../components/createRelatedAddress";
 
 export const AddressField = () => {
-  const [filter, setFilters] = useState("");
-  const [page, setPage] = useState(1);
-  const perPage = 10;
-  const sort: any = { field: "id", order: "DESC" };
   const { data } = useListContext();
   const ids = data?.map((i) => i.address_id);
-  const { data: addressData }: any = useGetMany("addresses", { ids: ids });
-  if (!addressData) return;
-  return (
-    <ListContextProvider
-      // @ts-ignore
-      value={{
-        data: addressData || [],
-        total: 0,
-        page: 1,
-        perPage: 10,
-        setPage,
-        setFilters,
-        sort,
-      }}
-    >
-      <div>
-        <Title title="Book list" />
+  const { data: addressData, isPending }: any = useGetMany("addresses", {
+    ids: ids,
+  });
 
-        <Datagrid>
-          <TextField source="street" />
-          <TextField source="city" />
-          <TextField source="postal_code" />
-        </Datagrid>
-      </div>
+  const listContext = useList({ data: addressData, isPending });
+
+  return (
+    <ListContextProvider value={listContext}>
+      <Datagrid bulkActionButtons={false}>
+        <TextField source="street" />
+        <TextField source="city" />
+        <TextField source="state" />
+        <ReferenceField source="country_id" reference="countries" />
+        <TextField source="postal_code" />
+        <TextField source="address_type" />
+        <EditButton resource="addresses" />
+      </Datagrid>
     </ListContextProvider>
   );
 };

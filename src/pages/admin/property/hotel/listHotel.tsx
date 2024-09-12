@@ -1,3 +1,4 @@
+import { height, maxHeight } from "@mui/system";
 import {
   CreateButton,
   DatagridConfigurable,
@@ -30,7 +31,7 @@ export const listHotel = () => (
       <TextField source="legal_name" />
       <TextField source="tagline" />
       <TextField source="price_range" />
-      <TextField source="description" />
+      <TextField source="description" sx={{ maxHeight: "1" }} />
       <EmailField source="email" />
       <TextField source="visibility" />
       <TextField source="slug" />

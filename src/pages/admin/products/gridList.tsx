@@ -88,44 +88,46 @@ const LoadedGridList = () => {
   if (!data || !media_data) return null;
 
   return (
-    <ImageList rowHeight={180} cols={cols} sx={{ m: 0 }}>
-      {images?.map((record: any, index: any) => {
-        return (
-          <ImageListItem
-            key={record.id}
-            onDragStart={() => handleDragStart({ index, id: record.id })}
-            onDragOver={handleDragOver}
-            onDrop={() => handleDrop({ index, id: record.id })}
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <img src={record.location} alt={record.originalname} />
-
-            <ImageListItemBar
-              title={record.originalname}
-              sx={{
-                background:
-                  "linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)",
+    images && (
+      <ImageList rowHeight={180} cols={cols} sx={{ m: 0 }}>
+        {images?.map((record: any, index: any) => {
+          return (
+            <ImageListItem
+              key={record.id}
+              onDragStart={() => handleDragStart({ index, id: record.id })}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop({ index, id: record.id })}
+              onClick={(event) => {
+                event.stopPropagation();
               }}
-              actionIcon={
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleDelete({ index, id: record.id });
-                  }}
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  <CancelIcon />
-                </IconButton>
-              }
-            />
-          </ImageListItem>
-        );
-      })}
-    </ImageList>
+            >
+              <img src={record.location} alt={record.originalname} />
+
+              <ImageListItemBar
+                title={record.originalname}
+                sx={{
+                  background:
+                    "linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)",
+                }}
+                actionIcon={
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleDelete({ index, id: record.id });
+                    }}
+                    sx={{
+                      color: "white",
+                    }}
+                  >
+                    <CancelIcon />
+                  </IconButton>
+                }
+              />
+            </ImageListItem>
+          );
+        })}
+      </ImageList>
+    )
   );
 };
 

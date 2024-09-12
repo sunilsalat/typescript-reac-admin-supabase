@@ -1,5 +1,8 @@
-import { EditGuesser } from "react-admin";
+import { EditGuesser, ListGuesser } from "react-admin";
+import { createAddress } from "./createAddress";
 
 export default {
-  create: EditGuesser,
+  create: createAddress,
+  edit: EditGuesser,
+  list: ListGuesser,
 };

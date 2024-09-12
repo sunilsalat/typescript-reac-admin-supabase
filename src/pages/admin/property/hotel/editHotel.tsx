@@ -1,27 +1,13 @@
-import { Box, Divider, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
-  ArrayInput,
-  AutocompleteArrayInput,
   CreateProps,
-  Datagrid,
   Edit,
-  ImageField,
-  ImageInput,
-  NumberInput,
   Pagination,
-  ReferenceArrayInput,
-  ReferenceField,
-  ReferenceInput,
   ReferenceManyCount,
   ReferenceManyField,
-  ReferenceOneField,
   required,
-  SelectArrayInput,
-  SimpleForm,
-  SimpleFormIterator,
   TabbedForm,
-  TextInput,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
 import GridList from "../../products/gridList";
@@ -31,6 +17,7 @@ import { MiscInfo } from "../miscInfo";
 import { AmenityFeature } from "../amenityFeature";
 import { PaymentInfo } from "../paymentInfo";
 import { AddressField } from "../../address/addressField";
+import CreateRelatedAddresButton from "../../../../components/createRelatedAddress";
 
 const req = [required()];
 
@@ -90,27 +77,17 @@ export const hotelEdit = (
         </TabbedForm.Tab>
 
         {/* hotel contact */}
-        <TabbedForm.Tab label="Hotel Contact">
+        <TabbedForm.Tab label="Address">
           <ReferenceManyField
             target="entity_id"
             reference="resources_address"
             filter={{ entity_type: "hotel", "deleted_at@is": null }}
           >
-            {/* <Datagrid
-              sx={{
-                width: "100%",
-                "& .column-comment": {
-                  maxWidth: "20em",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                },
-              }}
-            >
-              <ReferenceField source="address_id" reference="addresses"> */}
             <AddressField />
-            {/* </ReferenceField>
-            </Datagrid> */}
+            <CreateRelatedAddresButton
+              button_title="Create Hotel Address"
+              entity_type="hotel"
+            />
           </ReferenceManyField>
         </TabbedForm.Tab>
 
