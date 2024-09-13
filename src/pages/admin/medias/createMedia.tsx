@@ -2,15 +2,11 @@ import {
   Button,
   Create,
   EditProps,
-  getRecordFromLocation,
   ImageField,
   ImageInput,
   required,
   SimpleForm,
-  TabbedForm,
   useDataProvider,
-  useGetOne,
-  useGetRecordId,
   useNotify,
   useRecordContext,
   useRedirect,
@@ -69,7 +65,6 @@ export const createMedia = (
             entity_id: data.entity_id,
             entity_type: data.entity_type,
             media_type: data.image_tag,
-            position: data.position,
           };
           return createMediaAndMediaResource({ uploadedImage, resource_media });
         });

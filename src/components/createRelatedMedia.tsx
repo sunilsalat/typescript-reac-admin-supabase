@@ -5,6 +5,7 @@ const CreateRelatedMediaButton = ({
   entity_type,
   image_tag,
   select_multiple,
+  next_position,
 }: any) => {
   const record = useRecordContext();
 

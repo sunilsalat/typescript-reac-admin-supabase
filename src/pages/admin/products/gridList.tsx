@@ -45,7 +45,6 @@ const LoadedGridList = () => {
   const cols = useColsForWidth();
   const [update] = useUpdate();
   const [images, setImages] = useState([]);
-
   const [draggedIndex, setDraggedIndex] = useState(null);
 
   const ids = data?.map((i: any) => i.media_id);
@@ -53,26 +52,40 @@ const LoadedGridList = () => {
     ids: ids,
   });
 
+  const RMIndex = (index: any) => {
+    const d1 = data?.find((p) => p.media_id === index.id);
+    return d1;
+  };
+
   const handleDragStart = (index: any) => {
     setDraggedIndex(index.index);
   };
 
   const handleDragOver = (event: any) => {
+    console.log("drageed_over_image");
     event.preventDefault(); // Necessary to allow dropping
   };
 
   const handleDrop = (index: any) => {
+    console.log("dragged_image", index.id);
     if (draggedIndex === null) return;
     const updatedImages: any = [...images];
     const [draggedImage] = updatedImages.splice(draggedIndex, 1);
     updatedImages.splice(index.index, 0, draggedImage);
     setImages(updatedImages);
     setDraggedIndex(null);
+
+    // Update resource_media table to update position
+    if (media_data?.length > 0) {
+      const d1 = data?.find((p) => p.media_id === index.id);
+      console.log({ d1 });
+    }
   };
 
   const handleDelete = async (index: any) => {
-    update("media", {
-      id: index.id,
+    const rm = RMIndex(index);
+    update("resources_media", {
+      id: rm.id,
       data: { deleted_at: new Date() },
       previousData: index,
     });

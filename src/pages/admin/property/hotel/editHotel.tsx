@@ -213,3 +213,5 @@ export const hotelEdit = (
     </Edit>
   );
 };
+
+// TODO - rename featured iamges
