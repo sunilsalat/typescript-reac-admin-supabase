@@ -9,7 +9,6 @@ interface Props extends FieldProps {
 
 const FullNameField = (props: Props) => {
   const record = useRecordContext();
-  console.log({ reer: record });
   return record ? (
     <Typography
       variant="body2"

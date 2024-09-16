@@ -175,6 +175,7 @@ export const hotelEdit = (
             target="entity_id"
             pagination={<Pagination />}
             filter={{ media_type: "gallery_image", "deleted_at@is": null }}
+            sort={{ field: "position", order: "ASC" }}
           >
             <Box display="flex">
               <Box>

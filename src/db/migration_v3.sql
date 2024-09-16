@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS resources_media (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (media_id) REFERENCES media(id)
+  FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS nomination_categories (

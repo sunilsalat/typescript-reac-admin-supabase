@@ -26,39 +26,6 @@ BEGIN
 
         RETURN OLD;
     END IF;
-
-    -- On UPDATE
-    IF (TG_OP = 'UPDATE') THEN
-        -- Check if the 'deleted_at' field was set to NULL
-        IF (OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL) THEN
-            -- This means a previously deleted row is being restored, adjust positions accordingly
-            -- Increment the position of existing rows that come after the restored row
-            UPDATE resources_media
-            SET "position" = "position" + 1
-            WHERE entity_type = NEW.entity_type
-              AND entity_id = NEW.entity_id
-              AND media_type = NEW.media_type
-              AND "position" >= NEW."position";
-
-            RETURN NEW;
-        END IF;
-
-        -- Check if the 'deleted_at' field was set to NULL and we need to adjust positions
-        IF (OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL) THEN
-            -- This means a row is being marked as deleted, adjust positions accordingly
-            -- Decrement the position of existing rows that come after the deleted row
-            UPDATE resources_media
-            SET "position" = "position" - 1
-            WHERE entity_type = OLD.entity_type
-              AND entity_id = OLD.entity_id
-              AND media_type = OLD.media_type
-              AND "position" > OLD."position";
-
-            RETURN NEW;
-        END IF;
-
-        RETURN NEW;
-    END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -66,4 +33,45 @@ CREATE TRIGGER adjust_positions_trigger
 AFTER INSERT OR DELETE OR UPDATE ON resources_media
 FOR EACH ROW
 EXECUTE FUNCTION adjust_positions();
+
+
+CREATE OR REPLACE FUNCTION reorder_positions_on_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Handle case where new position is less than old position
+  IF NEW.position < OLD.position THEN
+    -- Shift positions of rows between the new position and old position up by 1
+    UPDATE resources_media
+    SET position = position + 1
+    WHERE entity_type = NEW.entity_type
+      AND entity_id = NEW.entity_id
+      AND media_type = NEW.media_type
+      AND position >= NEW.position
+      AND position < OLD.position;
+  -- Handle case where new position is greater than old position
+  ELSIF NEW.position > OLD.position THEN
+    -- Shift positions of rows between the old position and new position down by 1
+    UPDATE resources_media
+    SET position = position - 1
+    WHERE entity_type = NEW.entity_type
+      AND entity_id = NEW.entity_id
+      AND media_type = NEW.media_type
+      AND position > OLD.position
+      AND position <= NEW.position;
+  END IF;
+
+  -- Set the new position for the row being updated
+  UPDATE resources_media
+  SET position = NEW.position
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER reorder_positions_trigger
+BEFORE UPDATE ON resources_media
+FOR EACH ROW
+EXECUTE FUNCTION reorder_positions_on_update();
+
 

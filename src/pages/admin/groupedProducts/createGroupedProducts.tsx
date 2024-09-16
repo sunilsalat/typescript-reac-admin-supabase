@@ -28,7 +28,6 @@ export const groupedProductCreate = (
 
   const onSuccess = (_: any) => {
     const record = getRecordFromLocation(location);
-    console.log({ record });
     notify("Related product added");
     if (record && record.group_id) {
       redirect(`/admin/products/${record.group_id}/4`);

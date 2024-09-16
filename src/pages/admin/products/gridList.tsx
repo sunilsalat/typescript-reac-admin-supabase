@@ -1,8 +1,10 @@
 import { useTheme, useMediaQuery, IconButton } from "@mui/material";
 import { Box, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
-import { useListContext, useGetMany, useUpdate } from "react-admin";
+import { useListContext, useGetMany, useUpdate, useDelete } from "react-admin";
 import CancelIcon from "@mui/icons-material/Cancel"; // Import cancel icon
 import { useEffect, useState } from "react";
+import { GridListItem } from "./gridListItem";
+import medias from "../medias";
 
 const GridList = () => {
   const { isPending } = useListContext();
@@ -41,102 +43,75 @@ const LoadingGridList = () => {
 };
 
 const LoadedGridList = () => {
-  const { data } = useListContext();
+  const { data: rmData, isPending }: any = useListContext();
   const cols = useColsForWidth();
   const [update] = useUpdate();
+  const [deleteOne] = useDelete();
   const [images, setImages] = useState([]);
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const [draggedRecord, setDraggedRecord]: any = useState(null);
 
-  const ids = data?.map((i: any) => i.media_id);
-  let { data: media_data, isPending }: any = useGetMany("media", {
-    ids: ids,
-  });
-
-  const RMIndex = (index: any) => {
-    const d1 = data?.find((p) => p.media_id === index.id);
-    return d1;
-  };
-
-  const handleDragStart = (index: any) => {
-    setDraggedIndex(index.index);
+  const handleDragStart = (data: any) => {
+    setDraggedIndex(data.index);
+    setDraggedRecord(data.data);
   };
 
   const handleDragOver = (event: any) => {
-    console.log("drageed_over_image");
-    event.preventDefault(); // Necessary to allow dropping
+    event.preventDefault();
   };
 
-  const handleDrop = (index: any) => {
-    console.log("dragged_image", index.id);
+  const handleDrop = (data: any) => {
     if (draggedIndex === null) return;
     const updatedImages: any = [...images];
     const [draggedImage] = updatedImages.splice(draggedIndex, 1);
-    updatedImages.splice(index.index, 0, draggedImage);
+    updatedImages.splice(data.index, 0, draggedImage);
     setImages(updatedImages);
-    setDraggedIndex(null);
 
-    // Update resource_media table to update position
-    if (media_data?.length > 0) {
-      const d1 = data?.find((p) => p.media_id === index.id);
-      console.log({ d1 });
+    console.log();
+
+    if (draggedRecord) {
+      // update("resources_media", {
+      //   id: draggedRecord.id,
+      //   data: { position: data.data.position },
+      //   previousData: draggedRecord,
+      // });
     }
+
+    setDraggedIndex(null);
+    setDraggedRecord(null);
   };
 
-  const handleDelete = async (index: any) => {
-    const rm = RMIndex(index);
-    update("resources_media", {
-      id: rm.id,
-      data: { deleted_at: new Date() },
-      previousData: index,
+  const handleDelete = async (data: any) => {
+    deleteOne("resources_media", {
+      id: data.id,
+      previousData: data,
     });
-
-    const updateImage = images.filter((i: any) => i.id !== index.id);
-    setImages(updateImage);
+    const updatedData = rmData?.filter((i: any) => i.id !== data.id);
+    setImages(updatedData);
   };
 
   useEffect(() => {
-    setImages(media_data);
+    if (images.length === 0) {
+      setImages(rmData);
+    }
   }, [isPending]);
 
-  if (!data || !media_data) return null;
+  if (!rmData) return null;
 
   return (
     images && (
       <ImageList rowHeight={180} cols={cols} sx={{ m: 0 }}>
         {images?.map((record: any, index: any) => {
           return (
-            <ImageListItem
-              key={record.id}
-              onDragStart={() => handleDragStart({ index, id: record.id })}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop({ index, id: record.id })}
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-            >
-              <img src={record.location} alt={record.originalname} />
-
-              <ImageListItemBar
-                title={record.originalname}
-                sx={{
-                  background:
-                    "linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)",
-                }}
-                actionIcon={
-                  <IconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleDelete({ index, id: record.id });
-                    }}
-                    sx={{
-                      color: "white",
-                    }}
-                  >
-                    <CancelIcon />
-                  </IconButton>
-                }
-              />
-            </ImageListItem>
+            <GridListItem
+              key={index}
+              index={index}
+              data={record}
+              handleDelete={handleDelete}
+              handleDragOver={handleDragOver}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+            />
           );
         })}
       </ImageList>
