@@ -2,10 +2,14 @@ import {
   Button,
   Create,
   EditProps,
+  FileField,
+  FileInput,
+  FormDataConsumer,
   ImageField,
   ImageInput,
   required,
   SimpleForm,
+  TextInput,
   useDataProvider,
   useNotify,
   useRecordContext,
@@ -70,7 +74,7 @@ export const createMedia = (
         });
 
         await Promise.all(creationTasks);
-        redirect(`/admin/${data.entity_type}/${data.entity_id}`);
+        redirect(`/admin/${data.entity_type}/${data.entity_id}/${data.tab_id}`);
       }
     } catch (error: any) {
       notify(`Error: ${error.message}`, { type: "warning" });
@@ -80,21 +84,31 @@ export const createMedia = (
   return (
     <Create {...props}>
       <SimpleForm onSubmit={handleSubmit}>
-        <ImageInput
-          source="featured_images"
-          label="Featured Images"
-          multiple={record?.select_multiple}
-        >
-          <ImageField source="src" title="title" />
-        </ImageInput>
+        <FormDataConsumer<{ is_video: boolean }>>
+          {({ formData, ...rest }) =>
+            formData.is_video ? (
+              <FileInput source="featured_images" label="Upload new video">
+                <FileField source="src" title="title" />
+              </FileInput>
+            ) : (
+              <ImageInput
+                source="featured_images"
+                label="Featured Images"
+                multiple={record?.select_multiple}
+                {...rest}
+              >
+                <ImageField source="src" title="title" />
+              </ImageInput>
+            )
+          }
+        </FormDataConsumer>
+
         <Button
           type="button"
           label="Go Back"
-          onClick={() => navigate(-1)} // Go back to the previous page
+          onClick={() => navigate(-1)}
         ></Button>
       </SimpleForm>
     </Create>
   );
 };
-
-const req = [required()];

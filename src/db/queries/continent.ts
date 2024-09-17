@@ -12,7 +12,7 @@ export const allContinents = async () => {
   }
 };
 
-export const readContinent = async (id) => {
+export const readContinent = async (id: string) => {
   try {
     let { data, error } = await supabase
       .from("continents")

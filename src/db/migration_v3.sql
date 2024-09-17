@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS properties (
   accepted_payment_method text[],
   availaible_languages UUID [],
   currencies_accepted UUID[],
-  visibility VARCHAR(50) DEFAULT 'PUBLIC',
+  visibility BOOLEAN DEFAULT FALSE,
   global_location_number VARCHAR(255) DEFAULT '',
   voting_division_id UUID REFERENCES nations(id),
   slug VARCHAR(255) NOT NULL,

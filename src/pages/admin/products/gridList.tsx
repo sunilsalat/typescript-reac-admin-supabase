@@ -5,6 +5,7 @@ import CancelIcon from "@mui/icons-material/Cancel"; // Import cancel icon
 import { useEffect, useState } from "react";
 import { GridListItem } from "./gridListItem";
 import medias from "../medias";
+import { callAdjustPositionsFunction } from "../../../db/queries/resourceMedia";
 
 const GridList = () => {
   const { isPending } = useListContext();
@@ -45,7 +46,6 @@ const LoadingGridList = () => {
 const LoadedGridList = () => {
   const { data: rmData, isPending }: any = useListContext();
   const cols = useColsForWidth();
-  const [update] = useUpdate();
   const [deleteOne] = useDelete();
   const [images, setImages] = useState([]);
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -67,14 +67,11 @@ const LoadedGridList = () => {
     updatedImages.splice(data.index, 0, draggedImage);
     setImages(updatedImages);
 
-    console.log();
-
-    if (draggedRecord) {
-      // update("resources_media", {
-      //   id: draggedRecord.id,
-      //   data: { position: data.data.position },
-      //   previousData: draggedRecord,
-      // });
+    if (draggedRecord.id !== data.data.id) {
+      callAdjustPositionsFunction({
+        dragged_id: draggedRecord.id,
+        new_position: data.data.position,
+      });
     }
 
     setDraggedIndex(null);
@@ -91,10 +88,8 @@ const LoadedGridList = () => {
   };
 
   useEffect(() => {
-    if (images.length === 0) {
-      setImages(rmData);
-    }
-  }, [isPending]);
+    setImages(rmData);
+  }, [isPending, rmData]);
 
   if (!rmData) return null;
 

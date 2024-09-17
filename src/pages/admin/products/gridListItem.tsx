@@ -23,6 +23,12 @@ export const GridListItem = ({
       onClick={(event) => {
         event.stopPropagation();
       }}
+      sx={{
+        maxHeight: "350",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
     >
       <img src={media?.location} alt={media?.originalname} />
 

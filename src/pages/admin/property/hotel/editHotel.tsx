@@ -1,13 +1,17 @@
-import { Box } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
   CreateProps,
   Edit,
   Pagination,
+  ReferenceField,
   ReferenceManyCount,
   ReferenceManyField,
+  ReferenceOneField,
   required,
+  SaveButton,
   TabbedForm,
+  Toolbar,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
 import GridList from "../../products/gridList";
@@ -18,12 +22,12 @@ import { AmenityFeature } from "../amenityFeature";
 import { PaymentInfo } from "../paymentInfo";
 import { AddressField } from "../../address/addressField";
 import CreateRelatedAddresButton from "../../../../components/createRelatedAddress";
+import { VideoField } from "../videoField";
+import { OtherMedia } from "../otherMedia";
 
 const req = [required()];
 
-export const hotelEdit = (
-  props: JSX.IntrinsicAttributes & CreateProps<any, Error, any>
-) => {
+export const hotelEdit = (props: any) => {
   return (
     <Edit {...props}>
       <TabbedForm>
@@ -125,7 +129,7 @@ export const hotelEdit = (
         </TabbedForm.Tab>
 
         {/* Featured hotel images */}
-        <TabbedForm.Tab
+        {/* <TabbedForm.Tab
           label="Featured Images"
           sx={{ maxWidth: "60em" }}
           count={
@@ -155,12 +159,12 @@ export const hotelEdit = (
               select_multiple={true}
             />
           </ReferenceManyField>
-        </TabbedForm.Tab>
+        </TabbedForm.Tab> */}
 
         {/*gallery images */}
         <TabbedForm.Tab
           label="gallery images"
-          sx={{ maxWidth: "60em" }}
+          sx={{ maxWidth: "80em" }}
           count={
             <ReferenceManyCount
               reference="resources_media"
@@ -178,15 +182,14 @@ export const hotelEdit = (
             sort={{ field: "position", order: "ASC" }}
           >
             <Box display="flex">
-              <Box>
-                <GridList />
-              </Box>
+              <GridList />
             </Box>
             <CreateRelatedMediaButton
               button_title="Add Gallery Images"
               entity_type="hotel"
               image_tag="gallery_image"
               select_multiple={true}
+              tab_id={7}
             />
           </ReferenceManyField>
         </TabbedForm.Tab>
@@ -199,15 +202,10 @@ export const hotelEdit = (
         {/* winner list */}
         {/*  */}
 
-        {/* video */}
-
-        {/* partner logo */}
-
-        {/* visibility */}
-
-        {/* hotel type */}
-
-        {/* tagline image */}
+        {/* video & other media */}
+        <TabbedForm.Tab label="Other Media">
+          <OtherMedia />
+        </TabbedForm.Tab>
 
         {/* tagline image style */}
       </TabbedForm>
