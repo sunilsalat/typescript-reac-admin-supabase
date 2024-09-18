@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS user_groups (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (profile_id) REFERENCES profile(id)
+  FOREIGN KEY (profile_id) REFERENCES profile(id),
   UNIQUE (profile_id, group_name)
 );
 
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS role_access_policies (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
   FOREIGN KEY (policy_id) REFERENCES policies (id) ON DELETE CASCADE,
-  UNIQUE role_name, policy_id
+  UNIQUE (role_name, policy_id)
 );
 
 -- group_access_policies
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS group_access_policies (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
   FOREIGN KEY (policy_id) REFERENCES policies (id) ON DELETE CASCADE, 
-  UNIQUE group_name, policy_id
+  UNIQUE (group_name, policy_id)
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS resources_media (
   entity_id UUID NOT NULL,
   media_id UUID NOT NULL,
   "position" INT DEFAULT 0,
-  media_type TEXT DEFAULT NOT NULL, -- FEATURED/GALLERY/LOGO/TAGLINE
+  media_type TEXT  NOT NULL, -- FEATURED/GALLERY/LOGO/TAGLINE
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -285,7 +285,6 @@ CREATE TABLE IF NOT EXISTS nomination_categories (
   deleted_at TIMESTAMP,
   CHECK ("left" < "right"),
   FOREIGN KEY (parent_id) REFERENCES nomination_categories(id)
-
 );
 
 CREATE TABLE IF NOT EXISTS press_releases (
@@ -337,7 +336,6 @@ CREATE TABLE IF NOT EXISTS organizations(
   deleted_at TIMESTAMP
 )
 
--- property start 
 CREATE TABLE IF NOT EXISTS properties (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   organization_id UUID NOT NULL, 
@@ -359,14 +357,15 @@ CREATE TABLE IF NOT EXISTS properties (
   currencies_accepted UUID[],
   visibility BOOLEAN DEFAULT FALSE,
   global_location_number VARCHAR(255) DEFAULT '',
-  voting_division_id UUID REFERENCES nations(id),
+  voting_division_id UUID,
   slug VARCHAR(255) NOT NULL,
   maximum_attendee_capacity INTEGER,
   unique_id VARCHAR(255) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (organization_id) REFERENCES organizations(id)
+  FOREIGN KEY (organization_id) REFERENCES organizations(id),
+  FOREIGN KEY (voting_division_id) REFERENCES nations(id)
 );
 
 CREATE TABLE IF NOT EXISTS spa (
@@ -384,8 +383,32 @@ CREATE TABLE IF NOT EXISTS hotel (
   number_of_rooms INTEGER
 ) INHERITS (properties);
 
+CREATE TABLE IF NOT EXISTS properties_social_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  UNIQUE (property_id, name)
+)
+
+CREATE TABLE IF NOT EXISTS properties_booking_links (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    property_id UUID NOT NULL,
+    "type" VARCHAR(255) NOT NULL, -- phone_number | whatsapp_number | booking_url | etc
+    "value" VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP, 
+    UNIQUE (property_id, "type")
+);
+
 
 CREATE TYPE winner_types AS ENUM ('global', 'continent', 'region', 'division');
+
+--  make all tables
 
 CREATE TABLE IF NOT EXISTS properties_winners (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -409,7 +432,6 @@ CREATE TABLE IF NOT EXISTS properties_voting_years (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id),
   UNIQUE (property_id, voting_year)
 )
 
@@ -420,7 +442,6 @@ CREATE TABLE IF NOT EXISTS properties_nomination_categories (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id),
   FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id),
   UNIQUE (property_id, nomination_category_id)
 ) 
@@ -432,19 +453,7 @@ CREATE TABLE IF NOT EXISTS featured_properties (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id),
   UNIQUE (property_type, deleted_at)
-)
-
-CREATE TABLE IF NOT EXISTS properties_social_links (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id)
 )
 
 -- find out is_font_color_blak and want_to_lear_more usage
@@ -454,26 +463,12 @@ CREATE TABLE IF NOT EXISTS properties_settings (
   overlay_mask BOOLEAN DEFAULT FALSE, 
   review_email VARCHAR(255),
   is_font_color_black BOOLEAN DEFAULT TRUE, 
-  want_to_learn_more BOOLEAN DEFAULT NULL, 
+  want_to_learn_more BOOLEAN DEFAULT FALSE, 
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id),
   UNIQUE (property_id)
 )
-
--- similar as porperty social links
-CREATE TABLE IF NOT EXISTS properties_booking_links (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
-  "type" VARCHAR(255) NOT NULL, -- phone_number | whatsapp_number | booking_url | etc
-  "value" VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id)
-);
-
 
 -- TBD
 -- What fields will goes in
@@ -607,7 +602,7 @@ CREATE TABLE IF NOT EXISTS settings (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
-    UNIQUE option_key, deleted_at
+    UNIQUE (option_key, deleted_at)
 );
 
 CREATE TABLE IF NOT EXISTS invoice_settings (
@@ -615,7 +610,7 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
     perfix VARCHAR(10) NOT NULL, -- prifix should be unique
     start_number INT NOT NULL, -- start number can not be repeated
     current_number INT NOT NULL, 
-    fiscal_year_range, -- year rage as per country
+    fiscal_year_range INT, -- year rage as per country
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP

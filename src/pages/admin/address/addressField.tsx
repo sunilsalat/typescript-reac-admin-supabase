@@ -8,7 +8,6 @@ import {
   useList,
   useListContext,
 } from "react-admin";
-import CreateRelatedAddresButton from "../../../components/createRelatedAddress";
 
 export const AddressField = () => {
   const { data } = useListContext();

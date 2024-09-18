@@ -24,7 +24,6 @@ export const createAddress = (
   const dataProvider = useDataProvider();
 
   const handleSubmit = async (data: any) => {
-    console.log({ data });
     const entity_id = data.entity_id;
     const entity_type = data.entity_type;
 

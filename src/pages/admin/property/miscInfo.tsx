@@ -12,7 +12,6 @@ const req = [required()];
 
 export const MiscInfo = () => {
   const record = useRecordContext();
-  if (!record) return null;
   return (
     <Grid>
       <TextInput

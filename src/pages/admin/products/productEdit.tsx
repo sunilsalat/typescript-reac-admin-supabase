@@ -34,16 +34,6 @@ const ProductTitle = () => {
   return record ? <span>Product "{record.name}"</span> : null;
 };
 
-const Aside = () => (
-  <div style={{ width: 200, margin: "4em 1em" }}>
-    <Typography variant="h6">Create Product Images</Typography>
-    <CreateRelatedMediaButton />
-    <Typography variant="body2">
-      Posts will only be published once an editor approves them
-    </Typography>
-  </div>
-);
-
 export const productEdit = (
   props: JSX.IntrinsicAttributes & EditProps<any, Error>
 ) => {

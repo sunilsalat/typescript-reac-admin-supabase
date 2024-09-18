@@ -20,6 +20,11 @@ import Hotel from "./property/hotel";
 import GroupedProducts from "./groupedProducts";
 import Medias from "./medias";
 import Address from "./address";
+import BookingLinks from "./property/bookingLinks";
+import SocialLinks from "./property/socialLinks";
+import { useEffect } from "react";
+import PropertyNominationCategories from "./property/nominationCategories";
+import { supabase } from "../../db/supabase";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -29,6 +34,24 @@ function MyAdmin() {
     (theme: any) => theme.name === themeName
   )?.light;
   const darkTheme = themes.find((theme: any) => theme.name === themeName)?.dark;
+
+  useEffect(() => {
+    // async function fetchData() {
+    //   console.log("sdfsdf");
+    //   const { data } = await supabase.auth.signUp({
+    //     email: "user@yopmail.com",
+    //     password: "secret",
+    //     options: {
+    //       data: {
+    //         first_name: "doe",
+    //         age: 27,
+    //         role: "user",
+    //       },
+    //     },
+    //   });
+    // }
+    // fetchData();
+  }, []);
 
   return (
     <Admin
@@ -61,6 +84,12 @@ function MyAdmin() {
       <Resource name="currencies" />
       <Resource name="addresses" {...Address} />
       <Resource name="media" {...Medias} />
+      <Resource name="properties_booking_links" {...BookingLinks} />
+      <Resource name="properties_social_links" {...SocialLinks} />
+      <Resource
+        name="properties_nomination_categories"
+        {...PropertyNominationCategories}
+      />
     </Admin>
   );
 }

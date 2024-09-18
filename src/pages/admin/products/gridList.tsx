@@ -1,10 +1,8 @@
-import { useTheme, useMediaQuery, IconButton } from "@mui/material";
-import { Box, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
-import { useListContext, useGetMany, useUpdate, useDelete } from "react-admin";
-import CancelIcon from "@mui/icons-material/Cancel"; // Import cancel icon
+import { useTheme, useMediaQuery } from "@mui/material";
+import { Box, ImageList, ImageListItem } from "@mui/material";
+import { useListContext, useDelete } from "react-admin";
 import { useEffect, useState } from "react";
 import { GridListItem } from "./gridListItem";
-import medias from "../medias";
 import { callAdjustPositionsFunction } from "../../../db/queries/resourceMedia";
 
 const GridList = () => {

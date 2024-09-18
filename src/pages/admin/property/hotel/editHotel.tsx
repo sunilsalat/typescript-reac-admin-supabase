@@ -1,19 +1,23 @@
 import { Box, Grid, TextField, Typography } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
-  CreateProps,
+  AutocompleteArrayInput,
+  Datagrid,
   Edit,
+  EditButton,
+  List,
   Pagination,
-  ReferenceField,
+  ReferenceArrayField,
+  ReferenceArrayInput,
   ReferenceManyCount,
   ReferenceManyField,
-  ReferenceOneField,
   required,
-  SaveButton,
+  SingleFieldList,
   TabbedForm,
-  Toolbar,
+  useGetOne,
+  useGetRecordId,
+  useUpdate,
 } from "react-admin";
-import { JSX } from "react/jsx-runtime";
 import GridList from "../../products/gridList";
 import CreateRelatedMediaButton from "../../../../components/createRelatedMedia";
 import { BasicInfo } from "../basicInfo";
@@ -22,15 +26,40 @@ import { AmenityFeature } from "../amenityFeature";
 import { PaymentInfo } from "../paymentInfo";
 import { AddressField } from "../../address/addressField";
 import CreateRelatedAddresButton from "../../../../components/createRelatedAddress";
-import { VideoField } from "../videoField";
 import { OtherMedia } from "../otherMedia";
+import CreateRelatedBookingLinksButton from "../createRelatedBookingLinks";
+import { BookingLinksField } from "../bookingLinks/bookingLInksField";
+import CreateRelatedSocialLinksButton from "../createRelatedSocialLinks";
+import { SocialLinksField } from "../socialLinks/socialLinkFields";
+import { PropertySetting } from "../proertySetting";
+import CreateRelatedNmCategories from "../createRelatedNmCategories";
+import { NominationCategoriesField } from "../nominationCategories/nomonationCategoryField";
+import { insertPnmCategories } from "../../../../db/queries/propertyNmCategory";
 
 const req = [required()];
 
-export const hotelEdit = (props: any) => {
+export const hotelEdit = () => {
+  const recordId = useGetRecordId();
+
+  // Fetch the previous values using useGetOne
+  const { data: previousData } = useGetOne("hotel", { id: recordId });
+  const [update] = useUpdate();
+
+  const handleSubmit = async (data: any) => {
+    let pnm_categories = data.pnm_categories;
+    delete data.pnm_categories;
+    await update("hotel", {
+      id: recordId,
+      data,
+      previousData,
+    });
+
+    await insertPnmCategories(data.id, pnm_categories);
+  };
+
   return (
-    <Edit {...props}>
-      <TabbedForm>
+    <Edit>
+      <TabbedForm onSubmit={handleSubmit}>
         {/* basic info */}
         <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
           <BasicInfo />
@@ -80,7 +109,7 @@ export const hotelEdit = (props: any) => {
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* hotel contact */}
+        {/* hotel address */}
         <TabbedForm.Tab label="Address">
           <ReferenceManyField
             target="entity_id"
@@ -98,6 +127,7 @@ export const hotelEdit = (props: any) => {
         {/* misc_info */}
         <TabbedForm.Tab label="misc info">
           <MiscInfo />
+          {/* <PropertySetting /> */}
         </TabbedForm.Tab>
 
         {/* amenity feature */}
@@ -127,39 +157,6 @@ export const hotelEdit = (props: any) => {
         <TabbedForm.Tab label="Payment Info">
           <PaymentInfo />
         </TabbedForm.Tab>
-
-        {/* Featured hotel images */}
-        {/* <TabbedForm.Tab
-          label="Featured Images"
-          sx={{ maxWidth: "60em" }}
-          count={
-            <ReferenceManyCount
-              reference="resources_media"
-              target="entity_id"
-              sx={{ lineHeight: "inherit" }}
-              filter={{ media_type: "featured_image", "deleted_at@is": null }}
-            />
-          }
-        >
-          <ReferenceManyField
-            reference="resources_media"
-            target="entity_id"
-            pagination={<Pagination />}
-            filter={{ media_type: "featured_image", "deleted_at@is": null }}
-          >
-            <Box display="flex">
-              <Box>
-                <GridList />
-              </Box>
-            </Box>
-            <CreateRelatedMediaButton
-              entity_type="hotel"
-              image_tag="featured_image"
-              button_title="Add Feature Image"
-              select_multiple={true}
-            />
-          </ReferenceManyField>
-        </TabbedForm.Tab> */}
 
         {/*gallery images */}
         <TabbedForm.Tab
@@ -194,10 +191,65 @@ export const hotelEdit = (props: any) => {
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* bookings */}
+        {/* bookings & social links */}
+        <TabbedForm.Tab label="Bookings & Social Links">
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Booking Links
+              </Typography>
 
-        {/* voting */}
-        {/* - nomination_categories, voting_devision, voting_years */}
+              <ReferenceManyField
+                reference="properties_booking_links"
+                target="property_id"
+                label="Booking Links"
+              >
+                <BookingLinksField />
+                <CreateRelatedBookingLinksButton />
+              </ReferenceManyField>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Social Links
+              </Typography>
+
+              <ReferenceManyField
+                reference="properties_social_links"
+                target="property_id"
+                label="Social Links"
+              >
+                <SocialLinksField />
+                <CreateRelatedSocialLinksButton />
+              </ReferenceManyField>
+            </Grid>
+          </Grid>
+        </TabbedForm.Tab>
+
+        {/* voting -nomination_categories, voting_devision, voting_years */}
+        <TabbedForm.Tab label="Voting">
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Voting
+            </Typography>
+            <ReferenceManyField
+              reference="properties_nomination_categories"
+              target="property_id"
+            >
+              <NominationCategoriesField />
+            </ReferenceManyField>
+
+            <ReferenceArrayInput
+              source="pnm_categories"
+              reference="nomination_categories"
+            >
+              <AutocompleteArrayInput
+                filterToQuery={(searchText: string) => ({
+                  "name@ilike": `%${searchText}%`,
+                })}
+              />
+            </ReferenceArrayInput>
+          </Grid>
+        </TabbedForm.Tab>
 
         {/* winner list */}
         {/*  */}
