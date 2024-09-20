@@ -406,7 +406,7 @@ CREATE TABLE IF NOT EXISTS properties_booking_links (
 );
 
 
-CREATE TYPE winner_types AS ENUM ('global', 'continent', 'region', 'division');
+CREATE TYPE winner_types AS ENUM ('global', 'continent', 'region', 'nation');
 
 --  make all tables
 
@@ -418,12 +418,13 @@ CREATE TABLE IF NOT EXISTS properties_winners (
   nomination_category_name VARCHAR(255) NOT NULL, 
   winning_year VARCHAR NOT NULL,
   winner_type  winner_types NOT NULL,
-  winner_type_id UUID NOT NULL, 
+  winner_type_id UUID  NULL, 
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id),
   FOREIGN KEY (nomination_category_id) REFERENCES nomination_categories(id),
   UNIQUE (property_id, winner_type, nomination_category_id, winning_year )
 )
+
+-- winner type id is not rquired
 
 CREATE TABLE IF NOT EXISTS properties_voting_years (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

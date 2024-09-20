@@ -12,6 +12,7 @@ export const BasicInfo = () => (
     <TextInput source="email" validate={req} />
     <TextInput source="telephone" validate={req} />
     <TextInput source="contact_type" validate={req} />
+    <TextInput source="contact_type" validate={req} />
     <TextInput
       source="property_type"
       defaultValue="hotel"

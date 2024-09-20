@@ -1,11 +1,12 @@
 import { CreateButton, useRecordContext } from "react-admin";
 
-const CreateRelatedNmCategories = ({ label }: any) => {
+const CreateRelatedWinner = ({ label }: any) => {
   const record = useRecordContext();
+  console.log({ record });
 
   return (
     <CreateButton
-      resource="properties_nomination_categories"
+      resource="properties_winners"
       label={label ? label : "CREATE"}
       state={
         record
@@ -20,4 +21,4 @@ const CreateRelatedNmCategories = ({ label }: any) => {
   );
 };
 
-export default CreateRelatedNmCategories;
+export default CreateRelatedWinner;

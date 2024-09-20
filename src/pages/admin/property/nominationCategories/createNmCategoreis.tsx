@@ -3,14 +3,25 @@ import {
   Create,
   SimpleForm,
   CreateProps,
-  ReferenceInput,
   ReferenceArrayInput,
   AutocompleteArrayInput,
+  useRedirect,
 } from "react-admin";
+import { upsertPnmCategories } from "../../../../db/queries/propertyNmCategory";
 
 export const NominationCategoriesCreate: React.FC<CreateProps> = (props) => {
-  const handleSubmit = (data: any) => {
-    console.log({ data });
+  const redirect = useRedirect();
+  const handleSubmit = async (data: any) => {
+    const result = await upsertPnmCategories(
+      data.property_id,
+      data.nomination_categories
+    );
+
+    if (data && result) {
+      redirect(`/admin/hotel/${data.property_id}/8`);
+    } else {
+      redirect(`/admin/hotel`);
+    }
   };
 
   return (
@@ -25,7 +36,7 @@ export const NominationCategoriesCreate: React.FC<CreateProps> = (props) => {
               "name@ilike": `%${searchText}%`,
             })}
           />
-        </ReferenceArrayInput>{" "}
+        </ReferenceArrayInput>
       </SimpleForm>
     </Create>
   );

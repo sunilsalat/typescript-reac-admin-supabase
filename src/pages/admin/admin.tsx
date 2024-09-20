@@ -24,6 +24,7 @@ import BookingLinks from "./property/bookingLinks";
 import SocialLinks from "./property/socialLinks";
 import { useEffect } from "react";
 import PropertyNominationCategories from "./property/nominationCategories";
+import WinnersLIst from "./property/winnersLIst";
 import { supabase } from "../../db/supabase";
 
 const store = localStorageStore(undefined, "ECommerce");
@@ -86,6 +87,7 @@ function MyAdmin() {
       <Resource name="media" {...Medias} />
       <Resource name="properties_booking_links" {...BookingLinks} />
       <Resource name="properties_social_links" {...SocialLinks} />
+      <Resource name="properties_winners" {...WinnersLIst} />
       <Resource
         name="properties_nomination_categories"
         {...PropertyNominationCategories}

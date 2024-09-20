@@ -1,19 +1,16 @@
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
 import {
-  AutocompleteArrayInput,
-  Datagrid,
   Edit,
-  EditButton,
-  List,
   Pagination,
-  ReferenceArrayField,
-  ReferenceArrayInput,
   ReferenceManyCount,
   ReferenceManyField,
   required,
-  SingleFieldList,
+  SaveButton,
   TabbedForm,
+  TabbedFormTabs,
+  TextInput,
+  Toolbar,
   useGetOne,
   useGetRecordId,
   useUpdate,
@@ -31,12 +28,18 @@ import CreateRelatedBookingLinksButton from "../createRelatedBookingLinks";
 import { BookingLinksField } from "../bookingLinks/bookingLInksField";
 import CreateRelatedSocialLinksButton from "../createRelatedSocialLinks";
 import { SocialLinksField } from "../socialLinks/socialLinkFields";
-import { PropertySetting } from "../proertySetting";
 import CreateRelatedNmCategories from "../createRelatedNmCategories";
 import { NominationCategoriesField } from "../nominationCategories/nomonationCategoryField";
-import { insertPnmCategories } from "../../../../db/queries/propertyNmCategory";
+import CreateRelatedWinner from "../createRelatedWinner";
+import { WinnerField } from "../winnersLIst/winnerField";
 
 const req = [required()];
+
+const HotelEditToolbar = () => (
+  <Toolbar>
+    <SaveButton />
+  </Toolbar>
+);
 
 export const hotelEdit = () => {
   const recordId = useGetRecordId();
@@ -46,23 +49,26 @@ export const hotelEdit = () => {
   const [update] = useUpdate();
 
   const handleSubmit = async (data: any) => {
-    let pnm_categories = data.pnm_categories;
-    delete data.pnm_categories;
+    // updating hotel
     await update("hotel", {
       id: recordId,
       data,
       previousData,
     });
-
-    await insertPnmCategories(data.id, pnm_categories);
   };
 
   return (
     <Edit>
-      <TabbedForm onSubmit={handleSubmit}>
+      <TabbedForm
+        tabs={<TabbedFormTabs variant="scrollable" scrollButtons="auto" />}
+        onSubmit={handleSubmit}
+        toolbar={<HotelEditToolbar />}
+      >
         {/* basic info */}
         <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
           <BasicInfo />
+          <TextInput source="checkin_time" label="CheckIn Time" />
+          <TextInput source="checkout_time" label="CheckOut Time" />
           <ReferenceManyField
             reference="resources_media"
             target="entity_id"
@@ -225,34 +231,40 @@ export const hotelEdit = () => {
           </Grid>
         </TabbedForm.Tab>
 
-        {/* voting -nomination_categories, voting_devision, voting_years */}
+        {/* voting */}
         <TabbedForm.Tab label="Voting">
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Voting
-            </Typography>
-            <ReferenceManyField
-              reference="properties_nomination_categories"
-              target="property_id"
-            >
-              <NominationCategoriesField />
-            </ReferenceManyField>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Nomination Categories
+              </Typography>
+              <ReferenceManyField
+                reference="properties_nomination_categories"
+                target="property_id"
+              >
+                <Grid container>
+                  <NominationCategoriesField />
+                  <CreateRelatedNmCategories label={"ADD"} />
+                </Grid>
+              </ReferenceManyField>
+            </Grid>
 
-            <ReferenceArrayInput
-              source="pnm_categories"
-              reference="nomination_categories"
-            >
-              <AutocompleteArrayInput
-                filterToQuery={(searchText: string) => ({
-                  "name@ilike": `%${searchText}%`,
-                })}
-              />
-            </ReferenceArrayInput>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Winner List
+              </Typography>
+              <ReferenceManyField
+                reference="properties_winners"
+                target="property_id"
+              >
+                <Grid>
+                  <WinnerField />
+                  <CreateRelatedWinner label={"ADD NOMINATION"} />
+                </Grid>
+              </ReferenceManyField>
+            </Grid>
           </Grid>
         </TabbedForm.Tab>
-
-        {/* winner list */}
-        {/*  */}
 
         {/* video & other media */}
         <TabbedForm.Tab label="Other Media">
