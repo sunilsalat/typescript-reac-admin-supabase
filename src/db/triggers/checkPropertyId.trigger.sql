@@ -3,8 +3,8 @@ CREATE OR REPLACE FUNCTION check_property_exists()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Check if the property_id exists in the properties table
-    IF NOT EXISTS (SELECT 1 FROM properties WHERE id = NEW.property_id) THEN
-        RAISE EXCEPTION 'property_id % does not exist in properties table', NEW.property_id;
+    IF NOT EXISTS (SELECT 1 FROM properties WHERE id = NEW.entity_id) THEN
+        RAISE EXCEPTION 'property_id % does not exist in properties table', NEW.entity_id;
     END IF;
     RETURN NEW;
 END;

@@ -69,6 +69,8 @@ call create_trigger_for_table('organizations', 'name', 10, 'unique_id');
 call create_trigger_for_table('products', 'null', 10, 'unique_id');
 call create_trigger_for_table('media', 'null', 10, 'unique_id');
 call create_trigger_for_table('hotel', 'name', 10, 'both');
+call create_trigger_for_table('restaurant', 'name', 10, 'both');
+call create_trigger_for_table('spa', 'name', 10, 'both');
 
 
 

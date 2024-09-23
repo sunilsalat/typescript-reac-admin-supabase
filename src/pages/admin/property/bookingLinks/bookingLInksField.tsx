@@ -3,7 +3,6 @@ import {
   EditButton,
   ListContextProvider,
   TextField,
-  useGetMany,
   useList,
   useListContext,
 } from "react-admin";

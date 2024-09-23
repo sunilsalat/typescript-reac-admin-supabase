@@ -4,7 +4,7 @@ import { required, TextInput } from "react-admin";
 
 const req = [required()];
 
-export const BasicInfo = () => (
+export const BasicInfo = ({ property_type }: any) => (
   <Grid>
     <TextInput source="name" validate={req} />
     <TextInput source="legal_name" validate={req} />
@@ -12,10 +12,9 @@ export const BasicInfo = () => (
     <TextInput source="email" validate={req} />
     <TextInput source="telephone" validate={req} />
     <TextInput source="contact_type" validate={req} />
-    <TextInput source="contact_type" validate={req} />
     <TextInput
       source="property_type"
-      defaultValue="hotel"
+      defaultValue={property_type}
       sx={{ display: "none" }}
       validate={req}
     />

@@ -34,23 +34,21 @@ import CreateRelatedWinner from "../createRelatedWinner";
 import { WinnerField } from "../winnersLIst/winnerField";
 
 const req = [required()];
-const entity_type = "hotel";
+const entity_type = "restaurant";
 
-const HotelEditToolbar = () => (
+const RestaurantEditToolbar = () => (
   <Toolbar>
     <SaveButton />
   </Toolbar>
 );
 
-export const hotelEdit = () => {
+export const restaurantEdit = () => {
   const recordId = useGetRecordId();
 
-  // Fetch the previous values using useGetOne
   const { data: previousData } = useGetOne(entity_type, { id: recordId });
   const [update] = useUpdate();
 
   const handleSubmit = async (data: any) => {
-    // updating hotel
     await update(entity_type, {
       id: recordId,
       data,
@@ -63,13 +61,11 @@ export const hotelEdit = () => {
       <TabbedForm
         tabs={<TabbedFormTabs variant="scrollable" scrollButtons="auto" />}
         onSubmit={handleSubmit}
-        toolbar={<HotelEditToolbar />}
+        toolbar={<RestaurantEditToolbar />}
       >
         {/* basic info */}
         <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
           <BasicInfo />
-          <TextInput source="checkin_time" label="CheckIn Time" />
-          <TextInput source="checkout_time" label="CheckOut Time" />
           <ReferenceManyField
             reference="resources_media"
             target="entity_id"
@@ -91,14 +87,14 @@ export const hotelEdit = () => {
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* hotel description */}
-        <TabbedForm.Tab label="hotel description">
-          <RichTextInput source="description" label="Hotel Description" />
+        {/* restaurant description */}
+        <TabbedForm.Tab label="restaurant description">
+          <RichTextInput source="description" label="restaurant Description" />
           <ReferenceManyField
             reference="resources_media"
             target="entity_id"
             filter={{
-              media_type: "hotel_description_image",
+              media_type: "restaurant_description_image",
               "deleted_at@is": null,
             }}
             perPage={1}
@@ -109,16 +105,16 @@ export const hotelEdit = () => {
               </Box>
             </Box>
             <CreateRelatedMediaButton
-              button_title="Add Hotel Description Image"
+              button_title="Add Restaurant Description Image"
               entity_type={entity_type}
-              image_tag="hotel_description_image"
+              image_tag="restaurant_description_image"
               select_multiple="false"
               tab_id={1}
             />
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* hotel address */}
+        {/* restaurant address */}
         <TabbedForm.Tab label="Address">
           <ReferenceManyField
             target="entity_id"
@@ -127,7 +123,7 @@ export const hotelEdit = () => {
           >
             <AddressField />
             <CreateRelatedAddresButton
-              button_title="Create Hotel Address"
+              button_title="Create Restaurant Address"
               entity_type={entity_type}
             />
           </ReferenceManyField>
@@ -229,7 +225,7 @@ export const hotelEdit = () => {
                 label="Social Links"
               >
                 <SocialLinksField />
-                <CreateRelatedSocialLinksButton entity_type={entity_type} />
+                <CreateRelatedSocialLinksButton />
               </ReferenceManyField>
             </Grid>
           </Grid>

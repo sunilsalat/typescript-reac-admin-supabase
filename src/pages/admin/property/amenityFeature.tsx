@@ -1,13 +1,6 @@
 import { Grid } from "@mui/material";
 import { RichTextInput } from "ra-input-rich-text";
-import {
-  ArrayInput,
-  required,
-  SimpleFormIterator,
-  TextInput,
-} from "react-admin";
-
-const req = [required()];
+import { ArrayInput, SimpleFormIterator, TextInput } from "react-admin";
 
 export const AmenityFeature = () => (
   <Grid>

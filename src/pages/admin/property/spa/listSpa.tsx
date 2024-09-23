@@ -3,7 +3,6 @@ import {
   Button,
   CreateButton,
   DatagridConfigurable,
-  DateField,
   EmailField,
   ExportButton,
   List,
@@ -25,22 +24,22 @@ const CustomButton = () => {
   const { selectedIds } = useListContext();
   const refresh = useRefresh();
   const notify = useNotify();
-  const unselectAll = useUnselectAll("hotel");
+  const unselectAll = useUnselectAll("spa");
   const [create, { isPending }] = useCreate();
 
   const handleClick = () => {
     try {
       if (selectedIds && selectedIds.length > 1) {
-        notify("Multiple hotels cannot be featured!", { type: "error" });
+        notify("Multiple spas cannot be featured!", { type: "error" });
         return;
       }
       create("featured_properties", {
-        data: { property_id: selectedIds[0], property_type: "hotel" },
+        data: { property_id: selectedIds[0], property_type: "spa" },
       });
-      notify("Hotel made featured");
+      notify("Spa made featured");
       unselectAll();
     } catch (error) {
-      notify("Error: Hotel not updated", { type: "error" });
+      notify("Error: Spa not updated", { type: "error" });
       refresh();
     }
   };
@@ -59,7 +58,7 @@ const BulkActionButtons = () => (
   </>
 );
 
-export const listHotel = () => {
+export const listSpa = () => {
   return (
     <List
       filters={[<SearchInput source="name@ilike" alwaysOn />]}
@@ -80,9 +79,7 @@ export const listHotel = () => {
         <EmailField source="email" />
         <TextField source="visibility" />
         <TextField source="slug" />
-        <TextField source="checkin_time" />
-        <TextField source="checkout_time" />
-        <NumberField source="number_of_rooms" />
+        <NumberField source="number_of_treatment_rooms" />
       </DatagridConfigurable>
     </List>
   );

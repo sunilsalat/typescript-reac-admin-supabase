@@ -1,6 +1,6 @@
 import { CreateButton, useRecordContext } from "react-admin";
 
-const CreateRelatedSocialLinksButton = () => {
+const CreateRelatedSocialLinksButton = ({ entity_type }: any) => {
   const record = useRecordContext();
 
   return (
@@ -10,7 +10,8 @@ const CreateRelatedSocialLinksButton = () => {
         record
           ? {
               record: {
-                property_id: record.id,
+                entity_id: record.id,
+                entity_type: entity_type,
               },
             }
           : undefined

@@ -12,10 +12,11 @@ import {
 import Products from "../products";
 import PressReleases from "../pressReleases";
 import Reviews from "../reviews";
-import Books from "../books";
 import Nations from "../settings/nations";
 import SubMenu from "./subMenu";
 import Hotel from "../property/hotel";
+import Restaurant from "../property/restaurant";
+import Spa from "../property/spa";
 
 // Define the shape of the state used in the menu
 interface MenuState {
@@ -62,32 +63,6 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
       }}
     >
       <DashboardMenuItem />
-      {/* <SubMenu
-        handleToggle={() => handleToggle("items")}
-        isOpen={state.items}
-        name="Items"
-        icon={<Books.icon />}
-        dense={dense}
-      >
-        <MenuItemLink
-          to="/admin/books"
-          state={{ _scrollToTop: true }}
-          primaryText={translate(`Books`, {
-            smart_count: 2,
-          })}
-          leftIcon={<Books.icon />}
-          dense={dense}
-        />
-        <MenuItemLink
-          to="/admin/laptops"
-          state={{ _scrollToTop: true }}
-          primaryText={translate(`Laptops`, {
-            smart_count: 2,
-          })}
-          leftIcon={<Books.icon />}
-          dense={dense}
-        />
-      </SubMenu>  */}
       <SubMenu
         handleToggle={() => handleToggle("properties")}
         isOpen={state.properties}
@@ -102,6 +77,24 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
             smart_count: 2,
           })}
           leftIcon={<Hotel.icon />}
+          dense={dense}
+        />
+        <MenuItemLink
+          to="/admin/restaurant"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`Restaurants`, {
+            smart_count: 2,
+          })}
+          leftIcon={<Restaurant.icon />}
+          dense={dense}
+        />
+        <MenuItemLink
+          to="/admin/spa"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`Spa`, {
+            smart_count: 2,
+          })}
+          leftIcon={<Spa.icon />}
           dense={dense}
         />
       </SubMenu>

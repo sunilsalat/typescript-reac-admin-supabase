@@ -23,35 +23,20 @@ import { PaymentInfo } from "../paymentInfo";
 const req = [required()];
 
 const choices = [
-  { id: "hotel", name: "Hotel" },
-  { id: "retreat", name: "Retreat" },
-  { id: "resort", name: "Resort" },
-  { id: "villa", name: "Villa" },
-  { id: "self catering", name: "Self Catering" },
-  { id: "lodge", name: "Lodge" },
-  { id: "sanctury", name: "Sanctury" },
-  { id: "service apartment", name: "Service Apartment" },
-  { id: "camp", name: "Camp" },
-  { id: "tented camp", name: "Tented Camp" },
-  { id: "game reserve", name: "Game Reserve" },
-  { id: "botique hotel", name: "Botique Hotel" },
+  { id: "italian", name: "italian" },
+  { id: "mexican", name: "mexican" },
+  { id: "indian", name: "indian" },
 ];
 
-export const hotelCreate = (
+export const restaurantCreate = (
   props: JSX.IntrinsicAttributes & CreateProps<any, Error, any>
 ) => (
   <Create {...props}>
     <TabbedForm>
       {/* basic info */}
       <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
-        <BasicInfo property_type="hotel" />
-        <SelectInput
-          source="hotel_type"
-          choices={choices}
-          defaultValue="hotel"
-        />
-        <TextInput source="checkin_time" label="CheckIn Time" />
-        <TextInput source="checkout_time" label="CheckOut Time" />
+        <BasicInfo property_type="restaurant" />
+        <SelectArrayInput source="cuisines" choices={choices} />
       </TabbedForm.Tab>
 
       {/* misc_info */}

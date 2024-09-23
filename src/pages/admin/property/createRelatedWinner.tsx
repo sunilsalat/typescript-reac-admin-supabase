@@ -2,7 +2,6 @@ import { CreateButton, useRecordContext } from "react-admin";
 
 const CreateRelatedWinner = ({ label }: any) => {
   const record = useRecordContext();
-  console.log({ record });
 
   return (
     <CreateButton

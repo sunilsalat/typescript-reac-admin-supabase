@@ -25,6 +25,8 @@ import SocialLinks from "./property/socialLinks";
 import { useEffect } from "react";
 import PropertyNominationCategories from "./property/nominationCategories";
 import WinnersLIst from "./property/winnersLIst";
+import Restaurant from "./property/restaurant";
+import Spa from "./property/spa";
 import { supabase } from "../../db/supabase";
 
 const store = localStorageStore(undefined, "ECommerce");
@@ -81,6 +83,8 @@ function MyAdmin() {
       <Resource name="reviews" {...Reviews} />
       <Resource name="nations" {...Nations} />
       <Resource name="hotel" {...Hotel} />
+      <Resource name="restaurant" {...Restaurant} />
+      <Resource name="spa" {...Spa} />
       <Resource name="grouped_products" {...GroupedProducts} />
       <Resource name="currencies" />
       <Resource name="addresses" {...Address} />

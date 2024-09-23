@@ -2,12 +2,9 @@ import { Grid } from "@mui/material";
 import {
   AutocompleteArrayInput,
   ReferenceArrayInput,
-  required,
   SelectArrayInput,
   TextInput,
 } from "react-admin";
-
-const req = [required()];
 
 export const PaymentInfo = () => (
   <Grid>

@@ -4,7 +4,7 @@ import { VideoField } from "./videoField";
 import CreateRelatedMediaButton from "../../../components/createRelatedMedia";
 import GridList from "../products/gridList";
 
-export const OtherMedia = () => {
+export const OtherMedia = ({ entity_type }: any) => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -22,7 +22,7 @@ export const OtherMedia = () => {
                 <GridList />
               </Box>
               <CreateRelatedMediaButton
-                entity_type="hotel"
+                entity_type={entity_type}
                 image_tag="featured_image"
                 button_title="Add Featured Image"
                 select_multiple={true}
@@ -41,7 +41,7 @@ export const OtherMedia = () => {
             </ReferenceOneField>
             <CreateRelatedMediaButton
               button_title="Add Featured Video"
-              entity_type="hotel"
+              entity_type={entity_type}
               image_tag="video"
               select_multiple={false}
               tab_id={7}
@@ -68,7 +68,7 @@ export const OtherMedia = () => {
                 <GridList />
                 <CreateRelatedMediaButton
                   button_title="Add Partner Logo"
-                  entity_type="hotel"
+                  entity_type={entity_type}
                   image_tag="partner_logo"
                   select_multiple={false}
                   tab_id={7}
@@ -87,7 +87,7 @@ export const OtherMedia = () => {
                 <GridList />
                 <CreateRelatedMediaButton
                   button_title="Add Tagline Image"
-                  entity_type="hotel"
+                  entity_type={entity_type}
                   image_tag="tagline_image"
                   select_multiple={false}
                   tab_id={7}

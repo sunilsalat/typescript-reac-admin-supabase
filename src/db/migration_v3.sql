@@ -385,24 +385,26 @@ CREATE TABLE IF NOT EXISTS hotel (
 
 CREATE TABLE IF NOT EXISTS properties_social_links (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID NOT NULL,
+  entity_id UUID NOT NULL,
+  entity_type VARCHAR NOT NULL,
   name VARCHAR(255) NOT NULL,
   url VARCHAR(255) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  UNIQUE (property_id, name)
+  UNIQUE (entity_id, name)
 )
 
 CREATE TABLE IF NOT EXISTS properties_booking_links (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    property_id UUID NOT NULL,
+    entity_id UUID NOT NULL,
+    entity_type VARCHAR NOT NULL,
     "type" VARCHAR(255) NOT NULL, -- phone_number | whatsapp_number | booking_url | etc
     "value" VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP, 
-    UNIQUE (property_id, "type")
+    UNIQUE (entity_id, "type")
 );
 
 
@@ -450,7 +452,7 @@ CREATE TABLE IF NOT EXISTS properties_nomination_categories (
 CREATE TABLE IF NOT EXISTS featured_properties (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   property_id UUID NOT NULL,
-  property_type VARCHAR UNIQUE NOT NULL,
+  property_type VARCHAR(55) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,

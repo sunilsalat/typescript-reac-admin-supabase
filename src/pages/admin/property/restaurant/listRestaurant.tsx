@@ -25,22 +25,22 @@ const CustomButton = () => {
   const { selectedIds } = useListContext();
   const refresh = useRefresh();
   const notify = useNotify();
-  const unselectAll = useUnselectAll("hotel");
+  const unselectAll = useUnselectAll("restaurant");
   const [create, { isPending }] = useCreate();
 
   const handleClick = () => {
     try {
       if (selectedIds && selectedIds.length > 1) {
-        notify("Multiple hotels cannot be featured!", { type: "error" });
+        notify("Multiple restaurants cannot be featured!", { type: "error" });
         return;
       }
       create("featured_properties", {
-        data: { property_id: selectedIds[0], property_type: "hotel" },
+        data: { property_id: selectedIds[0], property_type: "restaurant" },
       });
-      notify("Hotel made featured");
+      notify("Restaurant made featured");
       unselectAll();
     } catch (error) {
-      notify("Error: Hotel not updated", { type: "error" });
+      notify("Error: Restaurant not updated", { type: "error" });
       refresh();
     }
   };
@@ -59,7 +59,7 @@ const BulkActionButtons = () => (
   </>
 );
 
-export const listHotel = () => {
+export const listRestaurant = () => {
   return (
     <List
       filters={[<SearchInput source="name@ilike" alwaysOn />]}
@@ -80,9 +80,6 @@ export const listHotel = () => {
         <EmailField source="email" />
         <TextField source="visibility" />
         <TextField source="slug" />
-        <TextField source="checkin_time" />
-        <TextField source="checkout_time" />
-        <NumberField source="number_of_rooms" />
       </DatagridConfigurable>
     </List>
   );

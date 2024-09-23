@@ -1,11 +1,11 @@
 import icon from "@mui/icons-material/Image";
 import { BookingLinksCreate } from "./createBookingLinks";
-import { EditGuesser } from "react-admin";
 import { boolingLinksList } from "./listBookingLinks";
+import { BookingLinksEdit } from "./editBookingsLinks";
 
 export default {
   create: BookingLinksCreate,
   list: boolingLinksList,
-  edit: EditGuesser,
+  edit: BookingLinksEdit,
   icon: icon,
 };

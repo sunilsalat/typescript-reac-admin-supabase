@@ -9,7 +9,6 @@ import {
   SaveButton,
   TabbedForm,
   TabbedFormTabs,
-  TextInput,
   Toolbar,
   useGetOne,
   useGetRecordId,
@@ -34,15 +33,15 @@ import CreateRelatedWinner from "../createRelatedWinner";
 import { WinnerField } from "../winnersLIst/winnerField";
 
 const req = [required()];
-const entity_type = "hotel";
+const entity_type = "spa";
 
-const HotelEditToolbar = () => (
+const SpaEditToolbar = () => (
   <Toolbar>
     <SaveButton />
   </Toolbar>
 );
 
-export const hotelEdit = () => {
+export const spaEdit = () => {
   const recordId = useGetRecordId();
 
   // Fetch the previous values using useGetOne
@@ -50,7 +49,7 @@ export const hotelEdit = () => {
   const [update] = useUpdate();
 
   const handleSubmit = async (data: any) => {
-    // updating hotel
+    // updating spa
     await update(entity_type, {
       id: recordId,
       data,
@@ -63,13 +62,11 @@ export const hotelEdit = () => {
       <TabbedForm
         tabs={<TabbedFormTabs variant="scrollable" scrollButtons="auto" />}
         onSubmit={handleSubmit}
-        toolbar={<HotelEditToolbar />}
+        toolbar={<SpaEditToolbar />}
       >
         {/* basic info */}
         <TabbedForm.Tab label="basic info" sx={{ maxWidth: "40em" }}>
           <BasicInfo />
-          <TextInput source="checkin_time" label="CheckIn Time" />
-          <TextInput source="checkout_time" label="CheckOut Time" />
           <ReferenceManyField
             reference="resources_media"
             target="entity_id"
@@ -86,19 +83,19 @@ export const hotelEdit = () => {
               entity_type={entity_type}
               image_tag="basic_info_image"
               select_multiple="false"
-              tab_id={0}
+              tab_id={1}
             />
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* hotel description */}
-        <TabbedForm.Tab label="hotel description">
-          <RichTextInput source="description" label="Hotel Description" />
+        {/* spa description */}
+        <TabbedForm.Tab label="spa description">
+          <RichTextInput source="description" label="Spa Description" />
           <ReferenceManyField
             reference="resources_media"
             target="entity_id"
             filter={{
-              media_type: "hotel_description_image",
+              media_type: "spa_description_image",
               "deleted_at@is": null,
             }}
             perPage={1}
@@ -109,16 +106,16 @@ export const hotelEdit = () => {
               </Box>
             </Box>
             <CreateRelatedMediaButton
-              button_title="Add Hotel Description Image"
+              button_title="Add Spa Description Image"
               entity_type={entity_type}
-              image_tag="hotel_description_image"
+              image_tag="spa_description_image"
               select_multiple="false"
               tab_id={1}
             />
           </ReferenceManyField>
         </TabbedForm.Tab>
 
-        {/* hotel address */}
+        {/* spa address */}
         <TabbedForm.Tab label="Address">
           <ReferenceManyField
             target="entity_id"
@@ -127,7 +124,7 @@ export const hotelEdit = () => {
           >
             <AddressField />
             <CreateRelatedAddresButton
-              button_title="Create Hotel Address"
+              button_title="Create Spa Address"
               entity_type={entity_type}
             />
           </ReferenceManyField>
