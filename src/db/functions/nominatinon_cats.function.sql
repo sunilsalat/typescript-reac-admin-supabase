@@ -1,48 +1,46 @@
-CREATE OR REPLACE FUNCTION create_tree_root_with_auto_id(
+CREATE OR REPLACE FUNCTION create_tree_root(
     root_name VARCHAR(255),
     for_resource_type VARCHAR(255),
     parent_id UUID DEFAULT NULL,
-    position INT DEFAULT 0
+    tree_position INT DEFAULT 0
 )
 RETURNS VOID AS $$
 DECLARE
     new_tree_id UUID;
-    generated_slug VARCHAR(255);
-    generated_unique_id VARCHAR(255);
+    generated_slug TEXT;
+    generated_unique_id TEXT;
 BEGIN
     new_tree_id := uuid_generate_v4();
-    generated_slug := lower(regexp_replace(root_name, '[^a-zA-Z0-9]', '-', 'g') || '-' || substring(new_tree_id::text, 1, 8));
+    generated_slug := 'asf-2w34-d';
     generated_unique_id := new_tree_id::text;
 
-    -- Insert the new node into the table
-    INSERT INTO nomination_categories (
-        id, 
-        left, 
-        right, 
+    INSERT INTO nomination_categories ( 
+        tree_id,
+        lft, 
+        rgt, 
         parent_id, 
         name, 
         for_resource_type, 
-        position, 
         slug, 
         unique_id
     )
     VALUES (
-        new_tree_id, 
+        new_tree_id,
         1, 
         2, 
-        parent_id,   -- Use provided parent_id or default NULL
+        parent_id,  
         root_name, 
         for_resource_type, 
-        position,    -- Use provided position or default 0
         generated_slug, 
         generated_unique_id
     );
 
-    -- Notify the user of the added root node
-    RAISE NOTICE 'Root node "%s" added with left = 1, right = 2, id = %s, slug = %s, unique_id = %s, parent_id = %s, position = %s',
-        root_name, new_tree_id, generated_slug, generated_unique_id, parent_id, position;
+    RAISE NOTICE 'Root node "%s" added with left = 1, right = 2, id = %s, slug = %s, unique_id = %s, parent_id = %s',
+        root_name, new_tree_id, generated_slug, generated_unique_id, parent_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 
 
@@ -54,38 +52,36 @@ CREATE OR REPLACE FUNCTION add_child_node(
     parent_node_id UUID, 
     child_name VARCHAR(255), 
     for_resource_type VARCHAR(255), 
-    position INT DEFAULT 0
+    tree_position INT DEFAULT 0
 )
 RETURNS VOID AS $$
 DECLARE
     parent_left INT;
     parent_right INT;
     parent_tree_id UUID;
-    new_tree_id UUID;
     generated_slug VARCHAR(255);
     generated_unique_id VARCHAR(255);
 BEGIN
     -- Retrieve parent node details
-    SELECT "left", "right", tree_id INTO parent_left, parent_right, parent_tree_id
+    SELECT lft, rgt, tree_id INTO parent_left, parent_right, parent_tree_id
     FROM nomination_categories
     WHERE id = parent_node_id;
 
-    UPDATE nodes
-    SET "right" = "right" + 2
-    WHERE "right" > parent_left AND tree_id = parent_tree_id;
+    UPDATE nomination_categories
+    SET rgt = rgt + 2
+    WHERE rgt > parent_left AND tree_id = parent_tree_id;
 
-    UPDATE nodes
-    SET "left" = "left" + 2
-    WHERE "left" > parent_left;
+    UPDATE nomination_categories
+    SET lft = lft + 2
+    WHERE lft > parent_left;
 
-    new_tree_id := uuid_generate_v4();
-    generated_slug := lower(regexp_replace(child_name, '[^a-zA-Z0-9]', '-', 'g') || '-' || substring(new_tree_id::text, 1, 8));
-    generated_unique_id := new_tree_id::text;
+    generated_slug := lower(regexp_replace(child_name, '[^a-zA-Z0-9]', '-', 'g'));
+    generated_unique_id := uuid_generate_v4();
 
     INSERT INTO nomination_categories (
-        id, 
-        left, 
-        right, 
+        tree_id,
+        lft, 
+        rgt, 
         parent_id, 
         name, 
         for_resource_type, 
@@ -94,13 +90,13 @@ BEGIN
         unique_id
     )
     VALUES (
-        new_tree_id, 
+        parent_tree_id,
         parent_left + 1, 
         parent_left + 2, 
         parent_node_id, 
         child_name, 
         for_resource_type, 
-        position, 
+        tree_position, 
         generated_slug, 
         generated_unique_id
     );
@@ -108,7 +104,6 @@ BEGIN
     RAISE NOTICE 'Child node "%s" added under parent node with ID %s', child_name, parent_node_id;
 END;
 $$ LANGUAGE plpgsql;
-
 
 
 -- to delete a branch
@@ -227,3 +222,5 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+

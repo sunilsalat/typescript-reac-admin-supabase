@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Datagrid,
-  DateField,
   Edit,
   EditButton,
   EditProps,
@@ -15,11 +14,10 @@ import {
   useRecordContext,
 } from "react-admin";
 import { ProductEditDetails } from "./productEditDetail";
-import StarRatingField from "../reviews/StarRatingField";
 import CreateRelatedReviewButton from "./CreateRelatedReviewButton";
 import CreateGroupedProductButton from "./createGroupedProductButton";
 import { JSX } from "react/jsx-runtime";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import GridList from "./gridList";
 import CreateRelatedMediaButton from "../../../components/createRelatedMedia";
 
@@ -37,8 +35,6 @@ const ProductTitle = () => {
 export const productEdit = (
   props: JSX.IntrinsicAttributes & EditProps<any, Error>
 ) => {
-  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
-
   return (
     <Edit title={<ProductTitle />} {...props}>
       <TabbedForm>

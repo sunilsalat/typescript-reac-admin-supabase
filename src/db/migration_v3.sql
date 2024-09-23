@@ -272,8 +272,8 @@ CREATE TABLE IF NOT EXISTS resources_media (
 
 CREATE TABLE IF NOT EXISTS nomination_categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "left" INT NOT NULL,
-  "right" INT NOT NULL,
+  lft INT NOT NULL,
+  rgt INT NOT NULL,
   parent_id UUID DEFAULT NULL,
   "name" VARCHAR(255) NOT NULL,
   for_resource_type VARCHAR(255) NOT NULL,
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS nomination_categories (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  CHECK ("left" < "right"),
+  CHECK (lft < rgt),
   FOREIGN KEY (parent_id) REFERENCES nomination_categories(id)
 );
 

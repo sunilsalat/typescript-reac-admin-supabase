@@ -27,6 +27,7 @@ import PropertyNominationCategories from "./property/nominationCategories";
 import WinnersLIst from "./property/winnersLIst";
 import Restaurant from "./property/restaurant";
 import Spa from "./property/spa";
+import NominationCategory from "./nominationCategories";
 import { supabase } from "../../db/supabase";
 
 const store = localStorageStore(undefined, "ECommerce");
@@ -79,6 +80,7 @@ function MyAdmin() {
         />
       </CustomRoutes>
       <Resource name="press_releases" {...PressReleases} />
+      <Resource name="nomination_categories" {...NominationCategory} />
       <Resource name="products" {...Products} />
       <Resource name="reviews" {...Reviews} />
       <Resource name="nations" {...Nations} />

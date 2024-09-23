@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Box } from "@mui/material";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 
 import {
   useTranslate,
@@ -17,6 +18,7 @@ import SubMenu from "./subMenu";
 import Hotel from "../property/hotel";
 import Restaurant from "../property/restaurant";
 import Spa from "../property/spa";
+import NominationCategory from "../nominationCategories";
 
 // Define the shape of the state used in the menu
 interface MenuState {
@@ -101,14 +103,23 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
       <SubMenu
         handleToggle={() => handleToggle("products")}
         isOpen={state.products}
-        name="Products"
-        icon={<Products.icon />}
+        name="Sale"
+        icon={<ShoppingBasketIcon />}
         dense={dense}
       >
         <MenuItemLink
           to="/admin/products"
           state={{ _scrollToTop: true }}
           primaryText={translate(`Products`, {
+            smart_count: 2,
+          })}
+          leftIcon={<Products.icon />}
+          dense={dense}
+        />
+        <MenuItemLink
+          to="/admin/orders"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`orders`, {
             smart_count: 2,
           })}
           leftIcon={<Products.icon />}
@@ -122,6 +133,15 @@ const Menu: React.FC<MenuProps> = ({ dense = false }) => {
           smart_count: 2,
         })}
         leftIcon={<PressReleases.icon />}
+        dense={dense}
+      />
+      <MenuItemLink
+        to="/admin/nomination_categories"
+        state={{ _scrollToTop: true }}
+        primaryText={translate(`Nomination Categories`, {
+          smart_count: 2,
+        })}
+        leftIcon={<NominationCategory.icon />}
         dense={dense}
       />
       <MenuItemLink
