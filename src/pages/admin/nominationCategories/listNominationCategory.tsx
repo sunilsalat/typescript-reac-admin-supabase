@@ -15,7 +15,7 @@ import {
   useUnselectAll,
 } from "react-admin";
 import { Delete } from "@mui/icons-material";
-import { supabase } from "../../../db/supabase";
+import { supabase } from "../../../database/supabase";
 
 const DeleteNominationCategory = () => {
   const { selectedIds } = useListContext();

@@ -1,5 +1,5 @@
 import { supabaseAuthProvider, SupabaseAuthProviderOptions } from "ra-supabase";
-import { supabase } from "../db/supabase";
+import { supabase } from "../database/supabase";
 import { User } from "@supabase/supabase-js";
 
 const authProviderOptions: SupabaseAuthProviderOptions = {

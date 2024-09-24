@@ -16,7 +16,7 @@ import {
   useRedirect,
 } from "react-admin";
 import { JSX } from "react/jsx-runtime";
-import { uploadImagesToSupabase } from "../../../db/queries/uploadImages";
+import { uploadImagesToSupabase } from "../../../database/queries/uploadImages";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const createMedia = (

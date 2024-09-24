@@ -28,7 +28,7 @@ import WinnersLIst from "./property/winnersLIst";
 import Restaurant from "./property/restaurant";
 import Spa from "./property/spa";
 import NominationCategory from "./nominationCategories";
-import { supabase } from "../../db/supabase";
+import { supabase } from "../../database/supabase";
 
 const store = localStorageStore(undefined, "ECommerce");
 

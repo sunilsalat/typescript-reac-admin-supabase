@@ -1,5 +1,5 @@
 import { supabaseDataProvider } from "ra-supabase";
-import { anon, supabase, supabaseUrl } from "../db/supabase";
+import { anon, supabase, supabaseUrl } from "../database/supabase";
 
 const dataProvider = supabaseDataProvider({
   instanceUrl: supabaseUrl,

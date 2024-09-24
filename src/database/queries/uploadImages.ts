@@ -1,4 +1,4 @@
-import { supabase } from "../../db/supabase";
+import { supabase } from "../supabase";
 
 export const uploadImagesToSupabase = async (
   featured_images: any

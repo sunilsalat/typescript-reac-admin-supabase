@@ -7,7 +7,7 @@ import {
   AutocompleteArrayInput,
   useRedirect,
 } from "react-admin";
-import { upsertPnmCategories } from "../../../../db/queries/propertyNmCategory";
+import { upsertPnmCategories } from "../../../../database/queries/propertyNmCategory";
 
 export const NominationCategoriesCreate: React.FC<CreateProps> = (props) => {
   const redirect = useRedirect();

@@ -8,7 +8,7 @@ import {
   useNotify,
   useRedirect,
 } from "react-admin";
-import { supabase } from "../../../db/supabase";
+import { supabase } from "../../../database/supabase";
 
 export const createNominationCategory = (props: any) => {
   const redirect = useRedirect();

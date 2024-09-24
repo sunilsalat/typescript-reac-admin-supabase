@@ -3,7 +3,7 @@ import { Box, ImageList, ImageListItem } from "@mui/material";
 import { useListContext, useDelete } from "react-admin";
 import { useEffect, useState } from "react";
 import { GridListItem } from "./gridListItem";
-import { callAdjustPositionsFunction } from "../../../db/queries/resourceMedia";
+import { callAdjustPositionsFunction } from "../../../database/queries/resourceMedia";
 
 const GridList = () => {
   const { isPending } = useListContext();
