@@ -112,37 +112,49 @@ $$ LANGUAGE plpgsql;
 -- ! delete all of the nodes that their left and right is between the node's left and right
 -- ! update the right values in the tree to be right - width where thier right is bigger the current node's right
 -- ! update the left values in the tree to be left - width where thier left is bigger the current node's right
-CREATE OR REPLACE  PROCEDURE cut_off_branch(
-    node_id NUMERIC
+
+CREATE OR REPLACE FUNCTION cut_off_branch(
+    node_id UUID 
 )
-language plpgsql
+RETURNS VOID
+LANGUAGE plpgsql
 AS $$
 DECLARE 
-    node_left NUMERIC;
-    node_right NUMERIC;
-    width NUMERIC;
+    node_left INT;
+    node_right INT;
+    width INT;
     tree_id_ VARCHAR(255);
 BEGIN 
     SELECT 
-        "left", 
-        "right",
-        "right" - "left" + 1,
-        nodes.tree_id 
+        lft, 
+        rgt,
+        rgt - lft + 1,
+        tree_id 
     INTO 
         node_left, 
-        node_right,
-        width,
+        node_right, 
+        width, 
         tree_id_
-    FROM nodes WHERE "id" = node_icut_off_branchd;
+    FROM nomination_categories 
+    WHERE id = node_id;  -- Corrected to use node_id
 
-    DELETE FROM nodes WHERE "left" 
-    BETWEEN node_left AND node_right 
-    AND nodes.tree_id = tree_id_;
+    -- Delete the specified branch
+    DELETE FROM nomination_categories 
+    WHERE lft BETWEEN node_left AND node_right 
+    AND tree_id = tree_id;
 
-    UPDATE nodes SET "right" = "right" - width WHERE "right" > node_right AND nodes.tree_id = tree_id_;
-    UPDATE nodes SET "left" = "left" - width WHERE "left" > node_right AND nodes.tree_id = tree_id_;
-    commit;
-END;$$
+    -- Update left and right values of remaining nodes
+    UPDATE nomination_categories 
+    SET rgt = rgt - width 
+    WHERE rgt > node_right 
+    AND tree_id = tree_id;
+
+    UPDATE nomination_categories 
+    SET lft = lft - width 
+    WHERE lft > node_right 
+    AND tree_id = tree_id;
+END;$$;
+
 
 -- to delete a node and uplift its descendants
 -- ! find the node's left and right values
@@ -151,42 +163,46 @@ END;$$
 -- ! update the right values in the tree to be right - 1 and left to be left - 1 where their left is between the deleted node's left and right
 -- ! update the right values in the tree to be right - 2 where their right is bigger than the deleted node's right
 -- ! update the left values in the tree to be left - 2 where their left is bigger than the deleted node's right
-
-CREATE OR REPLACE  PROCEDURE delete_node_and_uplift_the_descendants(
-    node_id NUMERIC
+CREATE OR REPLACE FUNCTION delete_node(
+    node_id UUID
 )
-language plpgsql
+RETURNS VOID
+LANGUAGE plpgsql
 AS $$
 DECLARE 
-    node_left NUMERIC;
-    node_right NUMERIC; 
-    tree_id_ VARCHAR(255);
+    node_left INT;
+    node_right INT; 
 BEGIN 
     SELECT 
-        "left", 
-        "right",
-        nodes.tree_id 
+        lft, 
+        rgt
     INTO 
         node_left, 
-        node_right,
-        tree_id_
-    FROM nodes WHERE "id" = node_id;
+        node_right
+    FROM nomination_categories 
+    WHERE id = node_id;
 
-    DELETE FROM nodes WHERE "id" = node_id;
+    -- Delete the node
+    DELETE FROM nomination_categories WHERE id = node_id;
 
-    -- update the children
-    UPDATE nodes 
+    -- Update the children
+    UPDATE nomination_categories 
     SET
-        "right" = "right" - 1,
-        "left" = "left" - 1
-    WHERE "left" BETWEEN node_left AND node_right
-    AND nodes.tree_id = tree_id_;
+        rgt = rgt - 1,
+        lft = lft - 1
+    WHERE lft BETWEEN node_left AND node_right;
 
-    -- update other nodes
-    UPDATE nodes SET "right" = "right" - 2 WHERE "right" > node_right AND nodes.tree_id = tree_id_;
-    UPDATE nodes SET "left" = "left" - 2 WHERE "left" > node_right AND nodes.tree_id = tree_id_;
-    commit;
+    -- Update other nodes
+    UPDATE nomination_categories 
+    SET rgt = rgt - 2 
+    WHERE rgt > node_right;
+    
+    UPDATE nomination_categories 
+    SET lft = lft - 2 
+    WHERE lft > node_right;
 END;$$
+
+
 
 -- Method to get all descendants
 CREATE OR REPLACE FUNCTION get_descendants(
@@ -202,23 +218,23 @@ BEGIN
         SELECT 
             descendants.name
         FROM 
-            nodes AS descendants,
-            nodes AS parent
+            nomination_categories AS descendants,
+            nomination_categories AS parent
         WHERE 
-            descendants."left" BETWEEN parent."left" AND parent."right"
+            descendants.lft BETWEEN parent.lft AND parent.rgt
             AND parent.name = parent_name
             AND descendants.tree_id = tree_id
-        ORDER BY descendants."left";
+        ORDER BY descendants.lft;
     ELSE
         RETURN QUERY
         SELECT 
             descendants.name
         FROM 
-            nodes AS descendants
+            nomination_categories AS descendants
         WHERE 
-            descendants."left" BETWEEN left_value AND right_value
+            descendants.lft BETWEEN left_value AND right_value
             AND descendants.tree_id = tree_id
-        ORDER BY descendants."left";
+        ORDER BY descendants.lft;
     END IF;
 END;
 $$ LANGUAGE plpgsql;

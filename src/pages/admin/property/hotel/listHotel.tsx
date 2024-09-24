@@ -3,7 +3,6 @@ import {
   Button,
   CreateButton,
   DatagridConfigurable,
-  DateField,
   EmailField,
   ExportButton,
   List,
